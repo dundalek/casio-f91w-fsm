@@ -24,7 +24,7 @@ First, I took a macro close-up of my F-91W.
 
 Then, I contoured and created all the shapes in Adobe Illustrator.
 
-By this, I mean all the elements of the watch, e.i:
+By this, I mean all the elements of the watch, e.i.:
 - the screen;
 - the words;
 - the 7, 8 and 9 segments displays;
@@ -32,14 +32,14 @@ By this, I mean all the elements of the watch, e.i:
 
 ![](images/casio-svg-on-original.PNG)
 
-Then, I exported the shapes as an SVG file so I work on the colouring of all the elements.
+Then, I exported the shapes as an SVG file so I could work on the colouring of all the elements.
 
 ![](images/casio-svg-final.PNG)
 
 The next step is to rename all of the interactive elements with a unique ID - so JavaScript can select it and
 interact with it.
 
-ID assignation of the unit second display. Here is the shape's path:
+ID assignation of the **unit** **second** display. Here is the shape's path:
 
 ```text
 seconds            - Selects the "seconds" group of elements
@@ -49,7 +49,7 @@ seconds            - Selects the "seconds" group of elements
         ...
 ```
 
-Illustrator's layer path of the unit second display:
+Illustrator's layer path of the **unit** **second** display:
 
 ![](images/casio-unique-id.PNG)
 
