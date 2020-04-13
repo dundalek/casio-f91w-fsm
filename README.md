@@ -13,8 +13,8 @@ and it's fully functional. Have fun.
 I am a big fan of the Casio F-91W. It's simplicity, lightness, long-lasting battery life, toughness, makes it
 special to me.
 
-I have been wearing it for years now. When I realized no one bothered to make on online version of it - just in case
-you forgot yours at home - I decided to go on with this project.
+I have been wearing it for years now. But when I realized no one bothered to make an online version of it (in case
+you forgot yours at home, frightening right?), I decided to go on with this project and make it myself.
 
 ## How I made it
 
