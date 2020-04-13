@@ -3,7 +3,7 @@
 URL: https://alexisphilip.fr/F-91W/
 
 The legendary F-91W now has its online version,
-and it's fully functional. Hav fun. 
+and it's fully functional. Have fun. 
 
 > Warning: all the comments in the source code are written in French, as I wrote this code a long time ago, not thinking
 > it could be used by people throughout the world.
