@@ -10,7 +10,7 @@ and it's fully functional. Have fun.
 
 ## Why ?
 
-I am a big fan of the Casio F-91W. It's simplicity, lightness, long-lasting battery life, toughness, makes it
+I am a big fan of the Casio F-91W. Its simplicity, lightness, long-lasting battery life, toughness, make it
 special to me.
 
 I have been wearing it for years now. But when I realized no one bothered to make an online version of it (in case
@@ -53,8 +53,8 @@ Illustrator's layer path of the **unit** **second** display:
 
 ![](images/casio-unique-id.PNG)
 
-Here, each elements of the 7 display segment is assigned a letter. This way, I will be able to manually interact with 
-each elements of the display (hours, minutes, seconds, modes...).
+Here, each element of the 7 display segment is assigned with a letter. This way, I will be able to manually interact with 
+each element of the display (hours, minutes, seconds, modes...).
 
 Then I exported the SVG and interacted with it in JS. The code is available for you in the repository.
 
