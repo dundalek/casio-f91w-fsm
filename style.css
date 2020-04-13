@@ -1,0 +1,71 @@
+
+/* CSS GÉNÉRAL */
+
+html, body {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	font-family: Arial;
+	box-sizing: border-box;
+}
+
+body {
+	/*background-image: linear-gradient(to right top, #5b5b5b, #675f6b, #7a6076, #926079, #aa5f74, #a55a6f, #9f566b, #9a5166, #784961, #574054, #3c3541, #292929);*/
+	 background-image: linear-gradient(to right top, #000000, #201119, #341b31, #432850, #453974, #453974, #453974, #453974, #432850, #341b31, #201119, #000000);
+}
+
+@font-face {
+	font-family: Casio;
+	src: url(font/EuroStyle.ttf);
+}
+
+
+/* MAIN CSS */
+
+svg {
+	height: 550px;
+	width: 550px;
+}
+
+.main {
+	height: 100%;
+	width: 100%;
+}
+	.title-box {
+		height: 15%;
+		padding: 40px 0 0 40px;
+		color: white;
+		font-family: Casio, Calibri;
+	}
+		.title {
+			font-size: 1.5em;
+			font-weight: bold;
+			margin-bottom: 10px;
+		}
+		.content {
+			font-size: 1.1em;
+			letter-spacing: 1px;
+		}
+
+.svg-box {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 70%;
+	animation: shadow 10s infinite;
+}
+
+/* Animation de clignotement de l'ombre de la montre */
+@keyframes shadow {
+	0%   {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
+	10%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .3));}
+	30%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
+	40%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .3));}
+	50%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
+	72%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
+	75%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .25));}
+	78%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
+	90%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .3));}
+	98%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .3));}
+	100% {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
+}
