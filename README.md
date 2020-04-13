@@ -49,7 +49,9 @@ seconds            - Selects the "seconds" group of elements
         ...
 ```
 
-<div style="text-align:center"><img src="images/casio-unique-id.PNG" /></div>
+Illustrator's layer path of the unit second display.
+
+<img align="center" src="images/casio-unique-id.PNG" />
 
 Here, each elements of the 7 display segment is assigned a letter. This way, I will be able to manually interact with 
 each elements of the display (hours, minutes, seconds, modes...).
