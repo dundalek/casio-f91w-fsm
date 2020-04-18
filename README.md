@@ -1,6 +1,6 @@
 # Casio F-91W
 
-URL: https://alexisphilip.fr/F-91W/
+URL: https://www.alexisphilip.fr/demo/Casio-F-91W/
 
 The legendary F-91W now has its online version,
 and it's fully functional. Have fun. 
@@ -64,7 +64,5 @@ This project is licensed under the [MIT License](https://choosealicense.com/lice
 
 ## Author
 
-Alexis Philip ([Website](https://alexisphilip.fr),
-[GitHub](https://github.com/alexis-philip),
-[LinkedIn](https://www.linkedin.com/in/alexis-philip-019955176)). 
+Alexis Philip ([Website](https://alexisphilip.fr)). 
  
