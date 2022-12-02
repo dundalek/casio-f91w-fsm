@@ -1,71 +1,119 @@
-
-/* CSS GÉNÉRAL */
-
 html, body {
-	padding: 0;
-	margin: 0;
-	height: 100%;
-	font-family: Arial;
-	box-sizing: border-box;
+    height: 100%;
+    padding: 0;
+    margin: 0;
 }
 
 body {
-	/*background-image: linear-gradient(to right top, #5b5b5b, #675f6b, #7a6076, #926079, #aa5f74, #a55a6f, #9f566b, #9a5166, #784961, #574054, #3c3541, #292929);*/
-	 background-image: linear-gradient(to right top, #000000, #201119, #341b31, #432850, #453974, #453974, #453974, #453974, #432850, #341b31, #201119, #000000);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(to right top, #000000, #201119, #341b31, #432850, #453974, #453974, #453974, #453974, #432850, #341b31, #201119, #000000);
+    font-family: Arial;
+    color: white;
+    /* Casio's font */
+    font-family: EuroStyle, Calibri;
+    font-size: 1.1em;
 }
 
+/* Casio's font */
 @font-face {
-	font-family: Casio;
-	src: url(font/EuroStyle.ttf);
+    font-family: EuroStyle;
+    src: url(font/EuroStyle.ttf);
 }
 
+h1 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
 
-/* MAIN CSS */
+p {
+    letter-spacing: 1px;
+}
+
+a {
+    color: white;
+    font-weight: bold;
+}
+
+.link-with-image {
+    display: flex;
+    align-items: center;
+}
+
+.link-with-image img {
+    height: 18px;
+    width: 18px;
+    margin-right: 8px;
+}
+
+aside {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+}
+
+section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.col {
+    height: 40%;
+    width: 30%;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+}
+
+.col:first-child {
+    text-align: right;
+}
 
 svg {
-	height: 550px;
-	width: 550px;
+    /* height: 550px;
+    width: 550px; */
+    height: auto;
+    width: 40%;
+    margin: 0 10px 0 10px;
+    animation: shadow 10s infinite;
 }
 
-.main {
-	height: 100%;
-	width: 100%;
-}
-	.title-box {
-		height: 15%;
-		padding: 40px 0 0 40px;
-		color: white;
-		font-family: Casio, Calibri;
-	}
-		.title {
-			font-size: 1.5em;
-			font-weight: bold;
-			margin-bottom: 10px;
-		}
-		.content {
-			font-size: 1.1em;
-			letter-spacing: 1px;
-		}
-
-.svg-box {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 70%;
-	animation: shadow 10s infinite;
+/* TODO: make this in JS class? */
+#buttonL,
+#buttonC,
+#buttonA {
+    opacity: 0;
 }
 
-/* Animation de clignotement de l'ombre de la montre */
+#buttonL:hover,
+#buttonC:hover,
+#buttonA:hover {
+    opacity: 0.1;
+    cursor: pointer;
+}
+
+#buttonL:active,
+#buttonC:active,
+#buttonA:active {
+    opacity: 0.2;
+}
+
+/* Casio's SVG outline glowing shadow effect */
 @keyframes shadow {
-	0%   {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
-	10%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .3));}
-	30%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
-	40%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .3));}
-	50%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
-	72%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
-	75%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .25));}
-	78%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
-	90%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .3));}
-	98%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .3));}
-	100% {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
+    0%   {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
+    10%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .3));}
+    30%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
+    40%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .3));}
+    50%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
+    72%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
+    75%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .25));}
+    78%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
+    90%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .3));}
+    98%  {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .3));}
+    100% {filter: drop-shadow(0px 0px 10px rgba(161, 161, 161, .1));}
 }
