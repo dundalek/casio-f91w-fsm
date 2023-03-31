@@ -12,7 +12,7 @@
 </head>
 <body>
 
-    <aside>
+    <aside class="top-left">
         <h1 data-lighty-slide>Casio F-91W</h1>
         <p data-lighty-slide="timeout: 100">
             The legendary F-91W now has its online version,<br>
@@ -310,15 +310,22 @@
 
     </section>
 
+    <aside class="bottom-right">
+        <div id="SoundOnOff" class="on">
+            <img src="img/sound-on.svg" alt="Sound ON" id="SoundOn">
+            <img src="img/sound-off.svg" alt="Sound OFF" id="SoundOff">
+        </div>
+    </aside>
+
+    <!-- Vendors -->
+    <script src="vendors/animate-string.js"></script>
+    <script src="vendors/lighty-slide.min.js"></script>
+
     <!-- CASIO -->
     <script src="script/CasioF91WDigitalDisplay.js"></script>
     <script src="script/CasioF91WOperatingSystem.js"></script>
     <script src="script/CasioF91W.js"></script>
     <script src="script/main.js"></script>
-
-    <!-- Vendors -->
-    <!-- https://github.com/alexisphilip/lighty-slide/ -->
-    <script src="vendors/lighty-slide.min.js"></script>
     <script>
         // Global slide transition distance.
         lightySlide.slide = "50px";

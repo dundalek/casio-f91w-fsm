@@ -3,18 +3,111 @@
  * @author Alexis Philip (alexisphilip.fr)
  */
 
+/**
+ * TODO:
+ * - NAMING: set new names for the different segments displays (no snake_case?)
+ * - FIXES:
+ *      - search all `TODO`s in the code
+ *      - STOPWATCH: not accurate timing: instead of incrementing it an interval, increment it just like `dateTime` object (in the fake system clock + with an offset) OR just get the current date time milliseconds +- offset to just print milliseconds/seconds/minutes.
+ *      - RESPONSIVE (phone view is horrible)
+ *      - when incrementing values, do not increment the higher value after (ex: 59 minutes -> 00 should not increment the hour)
+ *      - alarm get/set should take into account time mode 12h
+ *      - alarm get/set seconds reset to 0 seconds
+ *      - all button actions are executed on "down" state, not "up" state
+ *      - switch between modes has exception if you set alarm, use stopwatch, etc (setDateTime does not show if a specific action has been done (stopwatch interaction, etc...))
+ *      - 12h format (PM) not shown if time below 13h
+ *      - stopwatch: when it's running, make dots blink
+ * - FUNCTIONALITIES:
+ *      - when a mode is triggered, display on the side it's current mode and instructions
+ *      - display basic instructions on load?
+ *      - displays instructions next to buttons dynamically
+ *      - add click sound and alarms
+ *      - store Casio data in cookies so the user has its settings saved
+ */
+
+// ###########
+// CASIO F-91W
+// ###########
+
 // It all happens here: the holy F-91W is instantiated, here, at this right place.
 const myCasioF91W = new CasioF91W();
 
-// What's below now has nothing to do with the watch itself. It's the dynamic instructions.
+// What's below now has nothing to do with the watch itself.
+
+
+// ###############
+// PAGE ANIMATIONS
+// ###############
+
+AnimateString.animationKeyframes = [
+    {
+        transform: "rotate(-7deg) scale(1.05)",
+        color: "#8f43ab",
+        offset: 0.5
+    },
+    {
+        transform: "rotate(0deg) scale(1)",
+        color: "unset",
+        offset: 1,
+    }
+];
+
+// TODO: fix AnimateString then implement it for all elements in the page.
+// TODO: fix underline (it is removed during the process)
+
+// Animates some strings in the page.
+new AnimateString(document.querySelectorAll(".top-left h1"));
+// new AnimateString(document.querySelectorAll(".top-left a"));
+
+
+// ################
+// SOUND MANAGEMENT
+// ################
+
+// Mutes all sound of the current document (for the watch's "bip" sound).
+
+const soundOnOffBtn = document.querySelector("#SoundOnOff");
+
+/**
+ * - Mutes the "bip" sound.
+ * - Shows/hides sound icons accordingly.
+ * - Stores in localStorage the "mute" state.
+ * @param {boolean} mute Mutes the "bip" sound or not.
+ */
+const muteBip = (mute) => {
+
+    // Shows/hide sound icons.
+    soundOnOffBtn.classList.remove(...["on", "off"]);
+    mute ? soundOnOffBtn.classList.add("off") : soundOnOffBtn.classList.add("on");
+
+    // Mutes the "bip" `Audio` instance.
+    myCasioF91W.os.bip.muted = mute;
+
+    // Sets button's state in local storage.
+    localStorage.setItem("isBipMuted", mute);
+};
+
+// If "bip" mute state is stored in the local storage, get it.
+if (localStorage.getItem("isBipMuted")) {
+    muteBip(localStorage.getItem("isBipMuted") === "true");
+}
+
+// On sound ON/OFF click, toggles it's muted state.
+document.querySelector("#SoundOnOff").addEventListener("click", (e) => {
+    // If sound if "ON", we'll turn it off.
+    muteBip(e.currentTarget.classList.contains("on"));
+});
+
 
 // ####################
 // DYNAMIC INSTRUCTIONS
 // ####################
 
+// Manages the dynamic instructions.
+
 const elementButtonL = document.querySelector("#descriptionButtonL"),
-elementButtonC = document.querySelector("#descriptionButtonC"),
-elementButtonA = document.querySelector("#descriptionButtonA");
+      elementButtonC = document.querySelector("#descriptionButtonC"),
+      elementButtonA = document.querySelector("#descriptionButtonA");
 
 /**
  * Adds instructions next to the watch's button related to the current operations of the watch.
@@ -117,6 +210,8 @@ const setInstructions = () => {
                 {opacity: 1},
             ], 200);
         }
+        // Once the string is appended, in the button element, let's animate it.
+        new AnimateString([buttonEl]);
     }
 };
 

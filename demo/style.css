@@ -50,10 +50,35 @@ a {
     margin-right: 8px;
 }
 
-aside {
+aside.top-left {
     position: absolute;
     top: 40px;
     left: 40px;
+}
+
+aside.bottom-right {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+}
+
+#SoundOnOff {
+    cursor: pointer;
+}
+
+#SoundOn,
+#SoundOff {
+    height: 40px;
+    width: 40px;
+    display: none;
+}
+
+#SoundOnOff.on #SoundOn {
+    display: block;
+}
+
+#SoundOnOff.off #SoundOff {
+    display: block;
 }
 
 section {

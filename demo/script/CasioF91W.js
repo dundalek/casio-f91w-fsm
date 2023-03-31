@@ -4,22 +4,6 @@
  */
 
 /**
- * TODO:
- * - NAMING: set new names for the different segments displays (no snake_case?)
- * - FIXES:
- *      - see TODOs
- *      - RESPONSIVE (phone view is horrible)
- *      - when incrementing values, do not increment the higher value after (ex: 59 minutes -> 00 should not increment the hour)
- *      - alarm get/set should take into account time mode 12h
- * - FUNCTIONALITIES:
- *      - when a mode is triggered, display on the side it's current mode and instructions
- *      - display basic instructions on load?
- *      - displays instructions next to buttons dynamically
- *      - add click sound and alarms
- *      - store Casio data in cookies so the user has its settings saved
- */
-
-/**
  * Casio F-91W.
  * 
  * I like to to see this class as the "case" of the watch.
@@ -68,7 +52,7 @@ class CasioF91W {
 
         buttonL.addEventListener("mouseup", e => {
             this.os.buttonL(false);
-            if (typeof onButtonClick === "function") this.onButtonClick();
+            if (typeof this.onButtonClick === "function") this.onButtonClick();
         });
         
         /**
@@ -80,7 +64,7 @@ class CasioF91W {
 
         buttonC.addEventListener("mouseup", e => {
             this.os.buttonC(false);
-            if (typeof onButtonClick === "function") this.onButtonClick();
+            if (typeof this.onButtonClick === "function") this.onButtonClick();
         });
         
         /**
@@ -92,7 +76,7 @@ class CasioF91W {
 
         buttonA.addEventListener("mouseup", e => {
             this.os.buttonA(false);
-            if (typeof onButtonClick === "function") this.onButtonClick();
+            if (typeof this.onButtonClick === "function") this.onButtonClick();
         });
     }
 }

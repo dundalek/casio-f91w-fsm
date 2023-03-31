@@ -131,6 +131,11 @@ class CasioF91WOperatingSystem {
      */
     buttonInterval;
     /**
+     * The Casio alarm/signal/switch mode "bip" sound `Audio` instance.
+     * @var {Audio}
+     */
+    bip;
+    /**
      * Contains all display variables.
      * @var {object}
      */
@@ -182,6 +187,9 @@ class CasioF91WOperatingSystem {
 
         // Sets stopwatch variables.
         this.lap = false;
+
+        // Casio's "bip" sound.
+        this.bip = new Audio("sound/bip.mp3");
 
         // Instantiates the watch's digital display system.
         this.digitalDisplay = new CasioF91WDigitalDisplay();
@@ -424,7 +432,7 @@ class CasioF91WOperatingSystem {
         if (this.activeMenu === "dateTime") {
             // No action here.
         } else if (this.activeMenu === "dailyAlarm") {
-            if (!isDown) {
+            if (isDown) {
                 // If in default mode.
                 if (this.activeAction === "default") {
                     this.alarmOnMark = true;
@@ -440,7 +448,7 @@ class CasioF91WOperatingSystem {
                 }
             }
         } else if (this.activeMenu === "stopwatch") {
-            if (!isDown) {
+            if (isDown) {
                 // If the stopwatch is running.
                 if (this.stopwatchInterval) {
                     // If the stopwatch has a saved split date time.
@@ -472,7 +480,7 @@ class CasioF91WOperatingSystem {
                 }
             }
         } else if (this.activeMenu === "setDateTime") {
-            if (!isDown) {
+            if (isDown) {
                 // If in default mode (edit second).
                 if (this.activeAction === "default") {
                     this.activeAction = "edit-minutes";
@@ -513,25 +521,29 @@ class CasioF91WOperatingSystem {
     buttonC(isDown) {
 
         if (this.activeMenu === "dateTime") {
-            if (!isDown) {
+            if (isDown) {
                 this.activeMenu = "dailyAlarm";
                 this.activeAction = "default"; 
             }
         } else if (this.activeMenu === "dailyAlarm") {
-            if (!isDown) {
+            if (isDown) {
                 this.activeMenu = "stopwatch";
                 this.activeAction = "default";
             }
         } else if (this.activeMenu === "stopwatch") {
-            if (!isDown) {
+            if (isDown) {
                 this.activeMenu = "setDateTime";
                 this.activeAction = "default";
             }
         } else if (this.activeMenu === "setDateTime") {
-            if (!isDown) {
+            if (isDown) {
                 this.activeMenu = "dateTime";
                 this.activeAction = "default";
             }
+        }
+
+        if (isDown) {
+            this.playBip();
         }
     }
 
@@ -551,7 +563,7 @@ class CasioF91WOperatingSystem {
                     // Here, we do not want to change it since we only wanted to display "CA510".
                     // So we'll change the time mode here, so it'll be changed again on button release.
                     this.timeMode = this.timeMode === "24" ? "12" : "24";  
-                }, 1000);
+                }, 3000);
             } else {
                 // If button is released, clears the timeout.
                 clearTimeout(this.buttonInterval);
@@ -563,7 +575,7 @@ class CasioF91WOperatingSystem {
         } else if (this.activeMenu === "dailyAlarm") {
             // If in default mode.
             if (this.activeAction === "default") {
-                if (!isDown) {
+                if (isDown) {
                     if (this.alarmOnMark && this.timeSignalOnMark) {
                         this.alarmOnMark = false;
                         this.timeSignalOnMark = false;
@@ -577,6 +589,7 @@ class CasioF91WOperatingSystem {
                         this.alarmOnMark = true;
                         this.timeSignalOnMark = false;
                     }
+                    this.playBip();
                 }
             } // If in editing mode.
             else if (["edit-hours", "edit-minutes"].includes(this.activeAction)) {
@@ -607,7 +620,7 @@ class CasioF91WOperatingSystem {
                 }
             }
         } else if (this.activeMenu === "stopwatch") {
-            if (!isDown) {
+            if (isDown) {
                 // If the stopwatch is running.
                 if (this.stopwatchInterval) {
                     // Stops the stopwatch and resets its interval object.
@@ -621,6 +634,7 @@ class CasioF91WOperatingSystem {
                         this.stopwatchDateTime.setMilliseconds(this.stopwatchDateTime.getMilliseconds() + 10);
                     }, 10);
                 }
+                this.playBip();
             }
         } else if (this.activeMenu === "setDateTime") {
             /**
@@ -671,7 +685,7 @@ class CasioF91WOperatingSystem {
      * Every fourth of a second, the element will hide, then reappear. So, it blinks every half a second.
      * @returns {boolean}
      */
-    getBlinkingState() {        
+    getBlinkingState() {
         let isDisplayed;
         const milliseconds = this.dateTime.getMilliseconds();
 
@@ -686,5 +700,14 @@ class CasioF91WOperatingSystem {
         }
 
         return isDisplayed;
+    }
+
+    /**
+     * Plays the "bip" sound.
+     */
+    playBip() {
+        this.bip.pause(); // Pauses the current sound if it is currently playing.
+        this.bip.currentTime = 0; // Resets it's time to 0.
+        this.bip.play(); // Plays the sound.
     }
 }
