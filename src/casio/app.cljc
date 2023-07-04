@@ -40,7 +40,11 @@
                                 :on {:c-down "setDateTime"}}
                     :setDateTime {:initial "default"
                                   :on {:c-down "dateTime"}
-                                  :states {:default {}}}}})
+                                  :states {:default {:on {:l-down "edit-minutes"}}
+                                           :edit-minutes {:on {:l-down "edit-hours"}}
+                                           :edit-hours {:on {:l-down "edit-month"}}
+                                           :edit-month {:on {:l-down "edit-day-number"}}
+                                           :edit-day-number {:on {:l-down "default"}}}}}})
 
    (j/lit {:actions {:toggleTimeMode (xstate/assign
                                       #js {:timeMode (fn [^js context]
