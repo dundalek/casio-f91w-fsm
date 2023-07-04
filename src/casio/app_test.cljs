@@ -13,8 +13,12 @@
   (.send actor #js {:type "a-up"}))
 
 (defn state-value [^Actor actor]
-  (js->clj (.-state.value actor)
+  (js/console.log "actor")
+  (js->clj (.-value (.getSnapshot actor))
            :keywordize-keys true))
+
+(defn ^js get-context [^Actor actor]
+  (.-context (.getSnapshot actor)))
 
 (defn make-watch-actor []
   (let [actor (xstate/interpret watch-machine)]
@@ -35,11 +39,11 @@
 
 (deftest toggle-time-mode
   (let [actor (make-watch-actor)]
-    (is (= "24" (.-state.context.timeMode actor)))
+    (is (= "24" (.-timeMode (get-context actor))))
     (press-a-button actor)
-    (is (= "12" (.-state.context.timeMode actor)))
+    (is (= "12" (.-timeMode (get-context actor))))
     (press-a-button actor)
-    (is (= "24" (.-state.context.timeMode actor)))))
+    (is (= "24" (.-timeMode (get-context actor))))))
 
 #_(deftest toggle-casio-screen)
 
@@ -64,7 +68,7 @@
     (.send actor #js {:type "a-down"})
     (.send actor #js {:type "a-down"})
     (.send actor #js {:type "l-down"})
-    (let [context (.-state.context actor)
+    (let [context (get-context actor)
           dailyAlarmDateTime (.-dailyAlarmDateTime context)]
       (is (= {:dailyAlarm "default"} (state-value actor)))
       (is (= true (.-alarmOnMark context)))

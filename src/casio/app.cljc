@@ -2,7 +2,8 @@
   (:require
    ["xstate" :as xstate]
    [applied-science.js-interop :as j]
-   [goog.object :as gobj]))
+   [goog.object :as gobj]
+   ["/casio/machine" :refer [machine]]))
 
 (defn make-time [hours minutes seconds]
   (doto (js/Date.)
@@ -10,64 +11,43 @@
     (.setMinutes minutes)
     (.setSeconds seconds)))
 
-(def watch-machine
-  (xstate/createMachine
-   (j/lit {:id "toggle"
-           :initial "dateTime"
-           :context {:timeMode "24"
-                     :alarmOnMark false
-                     :timeSignalOnMark false
-                     :dailyAlarmDateTime (make-time 7 0 0)}
-           :states {:dateTime {:initial "default"
-                               :states {:default {:on {:a-down "Holding"}}
-                                        :Holding {:on {:a-up "default"}
-                                                  :entry "toggleTimeMode"
-                                                  :after {3000 "Casio"}}
-                                        :Casio {:on {:a-up "default"}}}
-                               :on {:c-down "dailyAlarm"}},
-                    :dailyAlarm {:initial "default"
-                                 :states {:default {:on {:l-down {:target "edit-hours"
-                                                                  :actions ["enableAlarmOnMark"]}}}
-                                          ;; TODO: continuously increment while holding the button
-                                          :edit-hours {:on {:l-down "edit-minutes"
-                                                            :a-down {:actions ["incrementAlarmHours"]}}}
-                                          :edit-minutes {:on {:l-down "default"
-                                                              :a-down {:actions ["incrementAlarmMinutes"]}}}}
-                                 :on {:c-down "stopwatch"
-                                      :a-down {:actions ["toggleAlarmMode"]}}}
-                    :stopwatch {:initial "default"
-                                :states {:default {}}
-                                :on {:c-down "setDateTime"}}
-                    :setDateTime {:initial "default"
-                                  :on {:c-down "dateTime"}
-                                  :states {:default {:on {:l-down "edit-minutes"}}
-                                           :edit-minutes {:on {:l-down "edit-hours"}}
-                                           :edit-hours {:on {:l-down "edit-month"}}
-                                           :edit-month {:on {:l-down "edit-day-number"}}
-                                           :edit-day-number {:on {:l-down "default"}}}}}})
+(defn assign-context [f]
+  (xstate/assign
+   (fn [^js params]
+     (f (.-context params)))))
 
-   (j/lit {:actions {:toggleTimeMode (xstate/assign
-                                      #js {:timeMode (fn [^js context]
-                                                       (if (= (.-timeMode context) "24")
-                                                         "12" "24"))})
-                     :toggleAlarmMode (xstate/assign
-                                       (fn [^js context]
-                                         (let [alarmOnMark (.-alarmOnMark context)
-                                               timeSignalOnMark (.-timeSignalOnMark context)]
-                                           (cond
-                                             (and alarmOnMark timeSignalOnMark) #js {:alarmOnMark false :timeSignalOnMark false}
-                                             alarmOnMark #js {:alarmOnMark false :timeSignalOnMark true}
-                                             timeSignalOnMark #js {:alarmOnMark true :timeSignalOnMark true}
-                                             :else #js {:alarmOnMark true :timeSignalOnMark false}))))
-                     :enableAlarmOnMark (xstate/assign #js {:alarmOnMark (constantly true)})
-                     :incrementAlarmHours (xstate/assign
-                                           (fn [^js context]
-                                             #js {:dailyAlarmDateTime (doto (js/Date. (.-dailyAlarmDateTime context))
-                                                                        (.setHours (inc (.getHours (.-dailyAlarmDateTime context)))))}))
-                     :incrementAlarmMinutes (xstate/assign
-                                             (fn [^js context]
-                                               #js {:dailyAlarmDateTime (doto (js/Date. (.-dailyAlarmDateTime context))
-                                                                          (.setMinutes (inc (.getMinutes (.-dailyAlarmDateTime context)))))}))}})))
+(def actions
+  (j/lit {:toggleTimeMode (assign-context
+                           (fn [^js context]
+                             (let [mode (if (= (.-timeMode context) "24")
+                                          "12" "24")]
+                               #js {:timeMode mode})))
+          :toggleAlarmMode (assign-context
+                            (fn [^js context]
+                              (let [alarmOnMark (.-alarmOnMark context)
+                                    timeSignalOnMark (.-timeSignalOnMark context)]
+                                (cond
+                                  (and alarmOnMark timeSignalOnMark) #js {:alarmOnMark false :timeSignalOnMark false}
+                                  alarmOnMark #js {:alarmOnMark false :timeSignalOnMark true}
+                                  timeSignalOnMark #js {:alarmOnMark true :timeSignalOnMark true}
+                                  :else #js {:alarmOnMark true :timeSignalOnMark false}))))
+          :enableAlarmOnMark (assign-context (constantly #js {:alarmOnMark true}))
+          :incrementAlarmHours (assign-context
+                                (fn [^js context]
+                                  #js {:dailyAlarmDateTime (doto (js/Date. (.-dailyAlarmDateTime context))
+                                                             (.setHours (inc (.getHours (.-dailyAlarmDateTime context)))))}))
+          :incrementAlarmMinutes (assign-context
+                                  (fn [^js context]
+                                    #js {:dailyAlarmDateTime (doto (js/Date. (.-dailyAlarmDateTime context))
+                                                               (.setMinutes (inc (.getMinutes (.-dailyAlarmDateTime context)))))}))}))
+(def watch-machine
+  (xstate/createMachine (js/Object.assign #js {}
+                                          (.-config machine)
+                                          (j/lit {:context {:timeMode "24"
+                                                            :alarmOnMark false
+                                                            :timeSignalOnMark false
+                                                            :dailyAlarmDateTime (make-time 7 0 0)}}))
+                        #js {:actions actions}))
 
 (defn bind-events [actor]
   (let [button-l (js/document.querySelector "#buttonL")
@@ -105,7 +85,20 @@
                                                                :dailyAlarmDateTime])))))
     (.start actor)
 
-    (bind-events actor)))
+    (bind-events actor))
+
+  #_(let [;myCasioF91W (js/CasioF91W.)
+          actor (xstate/interpret machine
+                                  (j/lit {:input {:timeMode "24"
+                                                  :alarmOnMark false
+                                                  :timeSignalOnMark false
+                                                  :dailyAlarmDateTime (make-time 7 0 0)}}))]
+
+      (.subscribe actor (fn [snapshot] (.log js/console "Value:" (.-value snapshot))))
+      (.start actor)
+
+      (.send actor #js {:type "toggle"})
+      (.send actor #js {:type "toggle"})))
 
 ; (.send actor #js {:type "a-down"})
     ; (.send actor #js {:type "a-down"})
@@ -118,4 +111,3 @@
     ; (.send actor #js {:type "a-up"})
     ;
     ; (js/console.log "state" (.-state.value actor))))
-

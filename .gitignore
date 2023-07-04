@@ -2,7 +2,8 @@
 /demo/test
 node_modules
 .idea
-.clj-kondo/.cache
+.clj-kondo
+!.clj-kondo/config.edn
 .cpcache
 .shadow-cljs
 .nrepl-port
