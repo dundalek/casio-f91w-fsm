@@ -1,0 +1,4 @@
+{:tasks
+ {dev
+  {:doc "Start shadow-cljs dev server"
+   :task (shell "clojure -M:watch")}}}

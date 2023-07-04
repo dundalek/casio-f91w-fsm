@@ -1,1 +1,7 @@
+/demo/js
+node_modules
 .idea
+.clj-kondo/.cache
+.cpcache
+.shadow-cljs
+.nrepl-port

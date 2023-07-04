@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "devDependencies": {
+    "xstate": "^4.38.0"
+  }
+}

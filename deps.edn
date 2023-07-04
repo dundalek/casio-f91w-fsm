@@ -1,0 +1,10 @@
+{:deps {io.github.yogthos/maestro {:git/url "https://github.com/yogthos/maestro"
+                                   :git/tag "v0.1.2"
+                                   :git/sha "3d5edd4"}
+        clj-statecharts/clj-statecharts {:mvn/version "0.1.7"}
+        thheller/shadow-cljs {:mvn/version "2.20.18"}
+        binaryage/devtools {:mvn/version "1.0.6"}
+        applied-science/js-interop {:mvn/version "0.4.2"}}
+
+ :aliases
+ {:watch {:main-opts ["-m" "shadow.cljs.devtools.cli" "watch" "app"]}}}

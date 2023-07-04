@@ -1,0 +1,14 @@
+{:deps true
+
+ :dev-http {8888 ["demo"]}
+
+ :nrepl {:write-port-file true}
+
+ :builds
+ {:app {:target :browser
+        :output-dir "demo/js"
+        :asset-path "/js"
+        :modules {:app {:entries [casio.app]
+                        :init-fn casio.app/main}}
+        :devtools {:reload-strategy :full
+                   :preloads [devtools.preload]}}}}
