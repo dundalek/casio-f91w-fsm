@@ -1,6 +1,6 @@
 {:deps true
 
- :dev-http {8888 ["demo"]}
+ :dev-http {8888 ["demo" "demo/test"]}
 
  :nrepl {:write-port-file true}
 
@@ -11,4 +11,7 @@
         :modules {:app {:entries [casio.app]
                         :init-fn casio.app/main}}
         :devtools {:reload-strategy :full
-                   :preloads [devtools.preload]}}}}
+                   :preloads [devtools.preload]}}
+
+  :test {:target :browser-test
+         :test-dir "demo/test"}}}

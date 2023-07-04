@@ -1,4 +1,5 @@
 /demo/js
+/demo/test
 node_modules
 .idea
 .clj-kondo/.cache
