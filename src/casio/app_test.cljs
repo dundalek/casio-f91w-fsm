@@ -23,15 +23,15 @@
 
 (deftest cycle-through-modes
   (let [actor (make-watch-actor)]
-    (is (= {:DateTime "Default"} (state-value actor)))
+    (is (= {:dateTime "default"} (state-value actor)))
     (press-c-button actor)
-    (is (= {:DailyAlarm "Default"} (state-value actor)))
+    (is (= {:dailyAlarm "default"} (state-value actor)))
     (press-c-button actor)
-    (is (= "Stopwatch" (state-value actor)))
+    (is (= {:stopwatch "default"} (state-value actor)))
     (press-c-button actor)
-    (is (= "SetDateTime" (state-value actor)))
+    (is (= {:setDateTime "default"} (state-value actor)))
     (press-c-button actor)
-    (is (= {:DateTime "Default"} (state-value actor)))))
+    (is (= {:dateTime "default"} (state-value actor)))))
 
 (deftest toggle-time-mode
   (let [actor (make-watch-actor)]
@@ -66,7 +66,7 @@
     (.send actor #js {:type "l-down"})
     (let [context (.-state.context actor)
           dailyAlarmDateTime (.-dailyAlarmDateTime context)]
-      (is (= {:DailyAlarm "Default"} (state-value actor)))
+      (is (= {:dailyAlarm "default"} (state-value actor)))
       (is (= true (.-alarmOnMark context)))
       (is (= 9 (.getHours dailyAlarmDateTime)))
       (is (= 3 (.getMinutes dailyAlarmDateTime))))))
