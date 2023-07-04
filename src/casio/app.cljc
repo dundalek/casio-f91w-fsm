@@ -16,6 +16,15 @@
    (fn [^js params]
      (f (.-context params)))))
 
+(defn update-datetime-handler [f]
+  (assign-context
+   (fn [^js context]
+     (let [now (js/Date.now)
+           current (js/Date. (+ now (.-dateTimeOffset context)))
+           _ (f current)
+           dateTimeOffset (- (.getTime current) now)]
+       #js {:dateTimeOffset dateTimeOffset}))))
+
 (def actions
   (j/lit {:toggleTimeMode (assign-context
                            (fn [^js context]
@@ -39,14 +48,21 @@
           :incrementAlarmMinutes (assign-context
                                   (fn [^js context]
                                     #js {:dailyAlarmDateTime (doto (js/Date. (.-dailyAlarmDateTime context))
-                                                               (.setMinutes (inc (.getMinutes (.-dailyAlarmDateTime context)))))}))}))
+                                                               (.setMinutes (inc (.getMinutes (.-dailyAlarmDateTime context)))))}))
+          :resetTimeSeconds (update-datetime-handler #(.setSeconds % 0))
+          :incrementTimeMinutes (update-datetime-handler #(.setMinutes % (inc (.getMinutes %))))
+          :incrementTimeHours (update-datetime-handler #(.setHours % (inc (.getHours %))))
+          :incrementDateMonth (update-datetime-handler #(.setMonth % (inc (.getMonth %))))
+          :incrementDateDay (update-datetime-handler #(.setDate % (inc (.getDate %))))}))
+
 (def watch-machine
   (xstate/createMachine (js/Object.assign #js {}
                                           (.-config machine)
                                           (j/lit {:context {:timeMode "24"
                                                             :alarmOnMark false
                                                             :timeSignalOnMark false
-                                                            :dailyAlarmDateTime (make-time 7 0 0)}}))
+                                                            :dailyAlarmDateTime (make-time 7 0 0)
+                                                            :dateTimeOffset 0}}))
                         #js {:actions actions}))
 
 (defn bind-events [actor]
@@ -82,7 +98,8 @@
                                                               [:timeMode
                                                                :alarmOnMark
                                                                :timeSignalOnMark
-                                                               :dailyAlarmDateTime])))))
+                                                               :dailyAlarmDateTime
+                                                               :dateTimeOffset])))))
     (.start actor)
 
     (bind-events actor))

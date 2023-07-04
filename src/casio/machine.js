@@ -1,7 +1,7 @@
 import { createMachine } from "xstate";
 
 export const machine = createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5SwLYEMBOAXA7mrAxgBYB0E+YAKgJYpgDEBAtBAPY4B2A2gAwC6iUAAdWsalmqsOgkAA9EADgCcAJhIB2JQDYV6lQGYeCgKxKANCACeidQEYlJACyPjt4yu1L1jnkoC+fhaomLj4xGQUNHRkYABmaACuADZY9Ggs7Nz8MiJiElIy8ggqtrZO3r48Ppr6CipaFtYIxvqOTnVaqsZVdsYBQejYeISk5FhUtGAkABKsSRDUHFBpTAlCvAJIILniktJbRQb6JMamWjzGCo6t+kpK+o2IjgrHVQpXjlrGn6ZKjv0gYJDMKjSKTGZzBZLeiyWBYCgkNCxcYYAAUhh4PAAlPQgaERhFxlEprN5osoBscqJdgUDohjFp1Cd1MZ1HVSrZ9AzbI9mpiSFcWbclAo9JcVP9AoDBvjwmMJtEAMJoMSsFZrSlbHb5fagIqmNqaEwKN6uNwKXlctruRwqEpWnz1SUDELDOVoahJSwAQSSmBQjAynE1wmpOsKii0ZUuRkZHnUWh06l5thcDnUPHqXOU3ij+gBeLdoM9Pr9GAD6TYweyWrDewjCFsRmMJH0Uajzy0+gTSmMvMTxxZTZ4XO+3btBZlRYiJd9-pi8WSqSSQaym1DeXrdMbopId066k0SlsUZZjhTPFsTNs73e3ZcwoUk9dIJnXrn5ZIkHETCIrASGCwPQK5VmuVKbrSer0serYjhmnQXFGXgXo4TKikcdS2nU6j5lKhavuQs5ligX4LFgv7-oBKygSG2x1pBcj0vUe7dl4bEuPUKgpjexzXCopz2BKbJaE+eFTgRHrvsRpE-igiwJOMQEgZktHaluUHNDBhjdjwCHcshViILYHg8CQBhuPoTYKMZeiiS6wIEoRUnzt+5FyRwClwNRKk1huNK6oxCBKLpe4tKodRVL4mgXhmJyeLajj3EezrSi+BJwqwQhFoGNG+XREEBUUChRicJrFXoXiJroKZaD4ZnXBxfz6LUKjPg54SwGAWAACJgnQOU+eu+X+Q2xmciQnI2YyPjOAZTT1FoJCMt0tS3PUxlcm1sqkJ1PV9VMEBxIkKTAauqn0YViAlAoE2crVdy6KmXwPIZO4lZyLycs8tS1X0YlpR1XW9US4KuUw7meUpZ15WpDFFM8bQ+L4Y3hayyavTe72rV9LzFS4W3TrtwMKlMYN-gBUO5UNsOXQgOHHK4lzFZiCaWejTSY2UH2Wa0uO-QTr5E-tMluVIWBEKdVPgSN24iky4U3rouiXCyKbFVz2O8z9+P-e1O1A8LYPkJYTAeSgABGYAYJLg3S+G26lIY5Tfb2nwmJ0Kb3A4nYZseFzWdcARShwrCHfAWz4SMdvqYFTDduUdjGY4J76CoulfCmmgTSycH2D97wC45+3R3DV3nq99RMpmtpp24DKmDw6iF+6IPRIdi4pCXtN6JatUCh0LyWZ0J4pZHLckxCZJLF3DbNWoycmt0rJ3pyvKoS23ilBxmjXJmzegq3UzKqqM-bp0xxfBm-F2hcjdca9bbHFm9i-OcbJ-fZ21vqW-qnxpTYnDtO8FkLxGT3C5LyVQDgRK3n4p8L4tV97fw-CRdux0sB-0CpcQBKhgGXDbDUCBGMRxqD0IeO0HhcFGCbrrL+Tkf6fjJpRcOfl7YaVtGUYKXYvBsntJcPsxDnitj0M1TCuDdC4U-tOehKCRbg3kopTBRQcKLTTiJO4yNbjsyMrfAUIiWpYQkUgjKWUQRKMQL2DQx5lAkO0Bcb4KZbSmUPFeNswUqiMmMVgTK0ijpLnMY2a4VibzBVTnY045cOauBunYIwuDnDfBPFoYxBtD4BLqtw04vZBJxIaBjFkLZPjVwqiI-wtDCapInmg-xtYCoNneEtW4WTXCqFyWrForY7iiKuNdYqKS9qHzkRDRRtSZYaWam0CUkVfZtg8KhNWJUuyfS1njD+qU9YkCFoMphFMAnnFMu4BM59TCtAuAssoSyebfVWf04mxIhliyIAEq40DbS1TZsnVMAiObq0acs65-NymC0qfco2aATZm0thgAJpQqgkAuIlW4yhqhnIxiYFsyhwHvA4e8ZJQcgA */
+  /** @xstate-layout N4IgpgJg5mDOIC5SwLYEMBOAXA7mrAxgBYB0E+YAKgJYpgDEBAtBAPY4B2A2gAwC6iUAAdWsalmqsOgkAA9EADgDMCkgBYATAEYFATh57dmgGwKANCACeiNQHYArCS33jGhRqXOvugL4+LqJi4+MRkFDR0ZGAAZmgArgA2WPRoLOzc-DIiYhJSMvIIGjy6JDxlPPb2ajxKSrq69koW1gj2biQK9jy2PMYqrsZavv4ggdh4hKTkWFS0YCQAEqwJENQcUClMcUK8Akgg2eKS0vsFHjwkLhpV1xq2urbu9s02jyRKXaZGSmrGPBpGPwBdDjEJTcJzRbLVbreiyWBYCgkNDRGYYAAUSnKAEp6GNgpMwjMIvMlis1lBdllREc8qdEJVbCRbD81GobkoHGoXgg1A1mcYWV17nZbIMgaMQQTQtNZpECGgxKxNtsqftDrkTqACvYFGp3lpbt1dB4+TyPhd7FoWbYtJ5qg4tBL8RMZWhqAlLABBBKYFCMNKcNXCGma-KIWwaHn6C4KdwPK56YyNZ1S13gj3e30Yf2pNhBzLq0PHcOFLTWkiC60qSOaBTGHlaTSlcqGv5VVwKWypoLpsKZn1+qKxRLJBKBjJ7EM5Ev0hDlptOap-MX1obmKwMmqV+6RhRlNRxx490GE8gD7MoEiQcRMIisOIYWD0cf5yfUmd07WIZwGDpqTlqncf5yyjTdWlqSsXCxZQ+W0FwT2lDNPUHHNr1WLA7wfJ9NjfYMDmLL85B-LEmQA2w7EGXRTCxBtwIApQSCKTwrSUIp6gURC+3PFDL3Q28UDWOIZmfV90nwjVZ2-eculUPVAIMIptENc1DXURpDR4ao3DaaiuLBfteKHG9MMEjhhLgXDxMLadaS1Yj50GJkFENNlNMeO1bB5ADHB6TxqKKK4Gn0wkEVYIR0wDPCbIIz97IKTkNGZHRbUFetbFtJpwJjDp3DjXV7Aef5jBC0JYDALAABEIToKLrKnWK7NLZRVE0HR9EMEwNxaFz1HqeoXEafdqjUUrSHKqqavmCAYniJIXwnCTCPixA3AuNj9xc4w-mcSNGz5fUDCcuM6muKoxpICbquJSEZpHea83qj8mrnB5GxURwqiK3o7QeDQLquqb+NMoSRIW6KGskoidWokhdEAtihjZSpnnA38tHeJRBj0JtGhqbsRhdAzAZuyITKYMyLOfR6C0h5bSxUEoATSopRUK1GWibMpcqxKpKiMf4AYq665Xmcn70fUTFpiqGVoQfQMZNa1dJch5up-WTLjXep2TtNohcm0mxYwrDJas2nnrDOcekcfRBjY3VAvufa-ztWjD2TdkagNkWSWBimpCwIhwaeos4tLTTVFcOxqO6DRXC0RsrUcZRXGKBwKIPH2gfJlBA+Dmn3zDl7pK0Hgy46fR2VqYwGmG-bnHeZRuitW0+XrbOjf98hLCYcyUAAIzADAQ4t4urdLooo40GOV3j7RGzWpxan+LG1ENFxOMJtNieFnOTZ7vu4kH4fzaL2yJ4cu0iiY+wMt1rE2yyzn1+c5vHTb3QO4lDhWBm+B9hE0mJbKSDkmAzx5EwYwLZyiwNgU2C6soSQgOhqtbk4F46MXLkKZQPRnApm3r2AySDbqzVHCguWe1wJYwuMYTQKhyyuE3gTYERCzxAzJDCKAFCGZ3B3EjHoZRdBDDAi0OwGN442lfvDM6o1CGnjdF3BUSoeFzlMBjNqJo2jJjcPUc0hUnBlFSu4NeCZEHuiMjmVR0l4YlC5nQwKRR7Y8g0DPOGGkZ4USrnocxF4hx3TmlgaxDkv5MnsZoCoTi7Q8itHJVx1F4bJjYiaXxlirzi2wgAi+oCCh2mbF-ACX9CqGDoTEn4Tgrh9F+OyPU-15FIUMlmYyJtKYiWCbk5MFxHgxhqOWOMXYynQOTH0AwPwlaVABlgcK6Z2k-kjMlLsVpnCYLZF5cCyhGJ9DcNUJseoWTDFYQo8aUyIrELIUkWZhQb62kWeWbRrI1ktCVsvAELEejwztJ3UWlyzRoxEZWZJ8MHSuIQfUvsJNRbDkCZcw0TJto7M8G4TkJ19r1kuP8ZQVoOI2i+X7XOoM4A-KGJcR4vRTp2A+I8jW5cOhY3arjLEnJcWQgyZLS5LJVAZxZG4WsQKk7FFKNrIwrF9Zgt3obSFud84wq0klcuVRPDbWtPuKlMktDQJruxDO1QtLMrJgfNAvd+5DwwDCtiSVCpYwcNiw8qqvBySxlqu+Oq5F+CAA */
   id: "smartwatch",
   initial: "dateTime",
   states: {
@@ -100,6 +100,7 @@ export const machine = createMachine({
             "l-down": {
               target: "edit-minutes",
             },
+            "a-down": { actions: "resetTimeSeconds" },
           },
         },
         "edit-minutes": {
@@ -107,6 +108,7 @@ export const machine = createMachine({
             "l-down": {
               target: "edit-hours",
             },
+            "a-down": { actions: "incrementTimeMinutes" },
           },
         },
         "edit-hours": {
@@ -114,6 +116,7 @@ export const machine = createMachine({
             "l-down": {
               target: "edit-month",
             },
+            "a-down": { actions: "incrementTimeHours" },
           },
         },
         "edit-month": {
@@ -121,6 +124,7 @@ export const machine = createMachine({
             "l-down": {
               target: "edit-day-number",
             },
+            "a-down": { actions: "incrementDateMonth" },
           },
         },
         "edit-day-number": {
@@ -128,6 +132,7 @@ export const machine = createMachine({
             "l-down": {
               target: "default",
             },
+            "a-down": { actions: "incrementDateDay" },
           },
         },
       },
