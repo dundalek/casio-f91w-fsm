@@ -86,7 +86,8 @@
                                               ;; If the stopwatch is running then save a split time.
                                               stopwatchInterval #js {:stopwatchDateTimeSplit (js/Date. stopwatchDateTime)}
                                               ;; Otherwise clear stopwatch date time.
-                                              :else #js {:stopwatchDateTime (make-time 0 0 0)}))))}))
+                                              :else #js {:stopwatchDateTime (make-time 0 0 0)}))))
+          :playBip #(js/console.log "Playing bip")}))
 
 (def watch-machine
   (-> machine
@@ -111,6 +112,25 @@
     (.addEventListener button-a "mousedown" #(.send actor #js {:type "a-down"}))
     (.addEventListener button-a "mouseup" #(.send actor #js {:type "a-up"}))))
 
+(defn init-bip-mute-toggle [^js os]
+  (let [soundOnOffBtn (.querySelector js/document "#SoundOnOff")
+        muteBip (fn [mute]
+                  (.apply
+                   (.-remove (.-classList soundOnOffBtn))
+                   (.-classList soundOnOffBtn)
+                   #js ["on" "off"])
+                  (if mute
+                    (.add (.-classList soundOnOffBtn) "off")
+                    (.add (.-classList soundOnOffBtn) "on"))
+                  (set! (.. os -bip -muted) mute)
+                  (.setItem js/localStorage "isBipMuted" mute))]
+
+    (when (.getItem js/localStorage "isBipMuted")
+      (muteBip (= (.getItem js/localStorage "isBipMuted") "true")))
+
+    (.addEventListener soundOnOffBtn "click"
+                       (fn [e] (muteBip (.contains (.. e -currentTarget -classList) "on"))))))
+
 (defn ^:dev/after-load reload []
   (js/location.reload))
 
@@ -122,7 +142,8 @@
               (set! (.-style iframe) "flex-grow: 1; align-self: stretch;")
               (.appendChild js/document.body iframe)
               (inspect #js {:iframe iframe})))
-        actor (xstate/interpret watch-machine
+        actor (xstate/interpret (.withConfig watch-machine
+                                             (j/lit {:actions {:playBip #(.playBip os)}}))
                                 #js {:devTools inspect?})]
 
     (.subscribe actor (fn [snapshot]
@@ -147,7 +168,7 @@
                           ;; Lap is derived based on whether split time is set, we don't need to keep it in state separately.
                           (set! (.-lap os) (boolean (.-stopwatchDateTimeSplit context))))))
     (.start actor)
-
+    (init-bip-mute-toggle os)
     (bind-events actor))
 
   #_(let [;myCasioF91W (js/CasioF91W.)

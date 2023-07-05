@@ -37,6 +37,7 @@ export const machine = createMachine({
       on: {
         "c-down": {
           target: "dailyAlarm",
+          actions: "playBip",
         },
       },
     },
@@ -75,9 +76,10 @@ export const machine = createMachine({
       on: {
         "c-down": {
           target: "stopwatch",
+          actions: "playBip",
         },
         "a-down": {
-          actions: "toggleAlarmMode",
+          actions: ["toggleAlarmMode", "playBip"],
         },
       },
     },
@@ -86,7 +88,7 @@ export const machine = createMachine({
       states: {
         default: {
           on: {
-            "a-down": { actions: "toggleStopwatch" },
+            "a-down": { actions: ["toggleStopwatch", "playBip"] },
             "l-down": { actions: "toggleSplitOrClearStopwatch" },
           }
         },
@@ -94,6 +96,7 @@ export const machine = createMachine({
       on: {
         "c-down": {
           target: "setDateTime",
+          actions: "playBip",
         },
       },
     },
@@ -144,6 +147,7 @@ export const machine = createMachine({
       on: {
         "c-down": {
           target: "dateTime",
+          actions: "playBip",
         },
       },
     },
