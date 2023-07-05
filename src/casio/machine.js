@@ -84,7 +84,12 @@ export const machine = createMachine({
     stopwatch: {
       initial: "default",
       states: {
-        default: {},
+        default: {
+          on: {
+            "a-down": { actions: "toggleStopwatch" },
+            "l-down": { actions: "toggleSplitOrClearStopwatch" },
+          }
+        },
       },
       on: {
         "c-down": {

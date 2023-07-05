@@ -10,7 +10,8 @@
   (doto (js/Date.)
     (.setHours hours)
     (.setMinutes minutes)
-    (.setSeconds seconds)))
+    (.setSeconds seconds)
+    (.setMilliseconds 0)))
 
 (defn assign-context [f]
   (xstate/assign
@@ -57,7 +58,35 @@
           :incrementTimeMinutes (update-datetime-handler #(.setMinutes % (inc (.getMinutes %))))
           :incrementTimeHours (update-datetime-handler #(.setHours % (inc (.getHours %))))
           :incrementDateMonth (update-datetime-handler #(.setMonth % (inc (.getMonth %))))
-          :incrementDateDay (update-datetime-handler #(.setDate % (inc (.getDate %))))}))
+          :incrementDateDay (update-datetime-handler #(.setDate % (inc (.getDate %))))
+          :toggleStopwatch (assign-context
+                            (fn [^js context]
+                              (let [stopwatchInterval (.-stopwatchInterval context)
+                                    stopwatchDateTime (.-stopwatchDateTime context)]
+                                (if stopwatchInterval
+                                  (do
+                                    (js/clearInterval stopwatchInterval)
+                                    #js {:stopwatchInterval nil})
+                                  (let [interval (js/setInterval
+                                                  (fn []
+                                                    ;; hack: mutating the stopwatchDateTime
+                                                    ;; note: mimicking the original implementation, setInterval can accumulate inaccuracies
+                                                    (.setMilliseconds stopwatchDateTime
+                                                                      (+ (.getMilliseconds stopwatchDateTime) 10)))
+                                                  10)]
+                                    #js {:stopwatchInterval interval})))))
+          :toggleSplitOrClearStopwatch (assign-context
+                                        (fn [^js context]
+                                          (let [stopwatchInterval (.-stopwatchInterval context)
+                                                stopwatchDateTime (.-stopwatchDateTime context)
+                                                stopwatchDateTimeSplit (.-stopwatchDateTimeSplit context)]
+                                            (cond
+                                              ;; Reset if there is a saved split time.
+                                              stopwatchDateTimeSplit #js {:stopwatchDateTimeSplit nil}
+                                              ;; If the stopwatch is running then save a split time.
+                                              stopwatchInterval #js {:stopwatchDateTimeSplit (js/Date. stopwatchDateTime)}
+                                              ;; Otherwise clear stopwatch date time.
+                                              :else #js {:stopwatchDateTime (make-time 0 0 0)}))))}))
 
 (def watch-machine
   (-> machine
@@ -66,7 +95,10 @@
                             :alarmOnMark false
                             :timeSignalOnMark false
                             :dailyAlarmDateTime (make-time 7 0 0)
-                            :dateTimeOffset 0}))))
+                            :dateTimeOffset 0
+                            :stopwatchInterval nil
+                            :stopwatchDateTime (make-time 0 0 0)
+                            :stopwatchDateTimeSplit nil}))))
 
 (defn bind-events [actor]
   (let [button-l (js/document.querySelector "#buttonL")
@@ -109,7 +141,11 @@
                                                                :alarmOnMark
                                                                :timeSignalOnMark
                                                                :dailyAlarmDateTime
-                                                               :dateTimeOffset])))))
+                                                               :dateTimeOffset
+                                                               :stopwatchDateTime
+                                                               :stopwatchDateTimeSplit]))
+                          ;; Lap is derived based on whether split time is set, we don't need to keep it in state separately.
+                          (set! (.-lap os) (boolean (.-stopwatchDateTimeSplit context))))))
     (.start actor)
 
     (bind-events actor))
