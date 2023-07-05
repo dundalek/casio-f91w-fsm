@@ -131,12 +131,12 @@
     (.addEventListener soundOnOffBtn "click"
                        (fn [e] (muteBip (.contains (.. e -currentTarget -classList) "on"))))))
 
-(defn ^:dev/after-load reload []
+(defn ^:export ^:dev/after-load reload []
   (js/location.reload))
 
-(defn ^:export  main []
+(defn ^:export main []
   (let [os (js/CasioF91WOperatingSystem.)
-        inspect? false
+        inspect? true
         _ (when inspect?
             (let [iframe (js/document.createElement "iframe")]
               (set! (.-style iframe) "flex-grow: 1; align-self: stretch;")
@@ -170,29 +170,7 @@
                           (set! (.-lap os) (boolean (.-stopwatchDateTimeSplit context))))))
     (.start actor)
     (init-bip-mute-toggle os)
-    (bind-events actor))
+    (bind-events actor)))
 
-  #_(let [;myCasioF91W (js/CasioF91W.)
-          actor (xstate/interpret machine
-                                  (j/lit {:input {:timeMode "24"
-                                                  :alarmOnMark false
-                                                  :timeSignalOnMark false
-                                                  :dailyAlarmDateTime (make-time 7 0 0)}}))]
-
-      (.subscribe actor (fn [snapshot] (.log js/console "Value:" (.-value snapshot))))
-      (.start actor)
-
-      (.send actor #js {:type "toggle"})
-      (.send actor #js {:type "toggle"})))
-
-; (.send actor #js {:type "a-down"})
+    ; (.send actor #js {:type "c-down"})
     ; (.send actor #js {:type "a-down"})
-    ; (.send actor #js {:type "a-down"})
-    ; (.send actor #js {:type "a-down"})))
-
-    ; (.send actor #js {:type "a-down"})
-    ; (.send actor #js {:type "a-up"})
-    ; (.send actor #js {:type "a-down"})
-    ; (.send actor #js {:type "a-up"})
-    ;
-    ; (js/console.log "state" (.-state.value actor))))
