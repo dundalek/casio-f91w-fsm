@@ -1,154 +1,166 @@
 import { createMachine } from "xstate";
 
 export const machine = createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5SwLYEMBOAXA7mrAxgBYB0E+YAKgJYpgDEBAtBAPY4B2A2gAwC6iUAAdWsalmqsOgkAA9EADgDMCkgBYATAEYFATh57dmgGwKANCACeiNQHYArCS33jGhRqXOvugL4+LqJi4+MRkFDR0ZGAAZmgArgA2WPRoLOzc-DIiYhJSMvIIGjy6JDxlPPb2ajxKSrq69koW1gj2biQK9jy2PMYqrsZavv4ggdh4hKTkWFS0YCQAEqwJENQcUClMcUK8Akgg2eKS0vsFHjwkLhpV1xq2urbu9s02jyRKXaZGSmrGPBpGPwBdDjEJTcJzRbLVbreiyWBYCgkNDRGYYAAUSnKAEp6GNgpMwjMIvMlis1lBdllREc8qdEJVbCRbD81GobkoHGoXgg1A1mcYWV17nZbIMgaMQQTQtNZpECGgxKxNtsqftDrkTqACvYFGp3lpbt1dB4+TyPhd7FoWbYtJ5qg4tBL8RMZWhqAlLABBBKYFCMNKcNXCGma-KIWwaHn6C4KdwPK56YyNZ1S13gj3e30Yf2pNhBzLq0PHcOFLTWkiC60qSOaBTGHlaTSlcqGv5VVwKWypoLpsKZn1+qKxRLJBKBjJ7EM5Ev0hDlptOap-MX1obmKwMmqV+6RhRlNRxx490GE8gD7MoEiQcRMIisOIYWD0cf5yfUmd07WIZwGDpqTlqncf5yyjTdWlqSsXCxZQ+W0FwT2lDNPUHHNr1WLA7wfJ9NjfYMDmLL85B-LEmQA2w7EGXRTCxBtwIApQSCKTwrSUIp6gURC+3PFDL3Q28UDWOIZmfV90nwjVZ2-eculUPVAIMIptENc1DXURpDR4ao3DaaiuLBfteKHG9MMEjhhLgXDxMLadaS1Yj50GJkFENNlNMeO1bB5ADHB6TxqKKK4Gn0wkEVYIR0wDPCbIIz97IKTkNGZHRbUFetbFtJpwJjDp3DjXV7Aef5jBC0JYDALAABEIToKLrKnWK7NLZRVE0HR9EMEwNxaFz1HqeoXEafdqjUUrSHKqqavmCAYniJIXwnCTCPixA3AuNj9xc4w-mcSNGz5fUDCcuM6muKoxpICbquJSEZpHea83qj8mrnB5GxURwqiK3o7QeDQLquqb+NMoSRIW6KGskoidWokhdEAtihjZSpnnA38tHeJRBj0JtGhqbsRhdAzAZuyITKYMyLOfR6C0h5bSxUEoATSopRUK1GWibMpcqxKpKiMf4AYq665Xmcn70fUTFpiqGVoQfQMZNa1dJch5up-WTLjXep2TtNohcm0mxYwrDJas2nnrDOcekcfRBjY3VAvufa-ztWjD2TdkagNkWSWBimpCwIhwaeos4tLTTVFcOxqO6DRXC0RsrUcZRXGKBwKIPH2gfJlBA+Dmn3zDl7pK0Hgy46fR2VqYwGmG-bnHeZRuitW0+XrbOjf98hLCYcyUAAIzADAQ4t4urdLooo40GOV3j7RGzWpxan+LG1ENFxOMJtNieFnOTZ7vu4kH4fzaL2yJ4cu0iiY+wMt1rE2yyzn1+c5vHTb3QO4lDhWBm+B9hE0mJbKSDkmAzx5EwYwLZyiwNgU2C6soSQgOhqtbk4F46MXLkKZQPRnApm3r2AySDbqzVHCguWe1wJYwuMYTQKhyyuE3gTYERCzxAzJDCKAFCGZ3B3EjHoZRdBDDAi0OwGN442lfvDM6o1CGnjdF3BUSoeFzlMBjNqJo2jJjcPUc0hUnBlFSu4NeCZEHuiMjmVR0l4YlC5nQwKRR7Y8g0DPOGGkZ4USrnocxF4hx3TmlgaxDkv5MnsZoCoTi7Q8itHJVx1F4bJjYiaXxlirzi2wgAi+oCCh2mbF-ACX9CqGDoTEn4Tgrh9F+OyPU-15FIUMlmYyJtKYiWCbk5MFxHgxhqOWOMXYynQOTH0AwPwlaVABlgcK6Z2k-kjMlLsVpnCYLZF5cCyhGJ9DcNUJseoWTDFYQo8aUyIrELIUkWZhQb62kWeWbRrI1ktCVsvAELEejwztJ3UWlyzRoxEZWZJ8MHSuIQfUvsJNRbDkCZcw0TJto7M8G4TkJ19r1kuP8ZQVoOI2i+X7XOoM4A-KGJcR4vRTp2A+I8jW5cOhY3arjLEnJcWQgyZLS5LJVAZxZG4WsQKk7FFKNrIwrF9Zgt3obSFud84wq0klcuVRPDbWtPuKlMktDQJruxDO1QtLMrJgfNAvd+5DwwDCtiSVCpYwcNiw8qqvBySxlqu+Oq5F+CAA */
-  id: "smartwatch",
-  initial: "dateTime",
+  /** @xstate-layout N4IgpgJg5mDOIC5QDMCcBGA7gOkwQwBcBjAC2wkLABUBLAWzAGIiBaCAe0wDsBtABgC6iUAAd2sGgRrsuwkAA9EADgBsS7ABYATFvQB2JXyUBmVKiV6ANCACeiFcfTZjAVlTG9GvRj6o+egF8A6zQsXEJSckpaBnIwZDwAVwAbAkY8Nk5eQTkxCSkZOUUELVNsPgq+FQ0qlxd9dGs7BD1-bAM+YyV0dFQa81QgkIwcfGIyCgJqejBsAAl2ZIgaLih0lkSRfiEkEDzJaVld4q0VPmwXFS0Ncy09PRU3FSb7Fz1sLUMPFRU9N7+VEMQKFRhEJtEZvNFstVox5LACJRsHhkFMAE4ACmMlQAlIwQeFxlEpjFZgslisoNtcuIDoVjogXBZ2sYNHU+qgtBUbi8EL8NNgVKhWto+F50EpzECCWNIpNprEiHgJOx1ptqbt9gUjqBiip0ALHKcNEpDD9flpeS4tKhNF4+C5TL0rr5pSNCXK8DRkjYAILJPBoujMTLcDWiWnaoqICWoFzYdCXPRc7zGH51K2-doaM6cpl9VqDYLA92y8Hev0BoPrDhhnKayOHaMIdA-LTZn5pzo9Yy8m0CryPH5x3zWpRusJlqIV-2BuhxBIpNLJUPZHYR-JNhktg3qNmshym3fmXlqdu5771JRvLQuCegokUGdV+eQSQsEjsRJo2CMFe1tcaU3eldRjFwNGMBNLjca4-BcMVeT0dB2yZNxHE5E14MCYsZTBacfVnINsDfAgPy-H8ayycM9kbECFBjVknD+Tp-n0AwTFPZCE2MT5SlUVl4PHHDSzwp8CJfYjllIugVkSKZf3-Kj6w3OkdXoltwMgxNHgwuCENsRAbicLpeNbMVPgwe8PXLcS50k98ZK4OS4Eout1xo4C1OKVtrQTW8NG0dAHQqW9OIFBxeK6Bw2SMKypwRdgRDLEMAOorUt1AhBTHOCx4PtALXE6KwDJbPjnFNB0dCUU5PA0OK8ISpLRPiJJUlcwCG085tEycJQIL0HjJQeILE15ZDHkFLp-Gq6rTCZeqiUaqcIBapc-1XNLaK8mN9DG1tbTUG5rXcIwhOGScGrAAgABEIQYFKlPc9K6OKbReW6TQzC+4UHGMbEtAWyJYCu26SUhFbFzaxS3KA1Tm2Td5Sn6g99TjYrmnQRwBT4bTsQNE0LDq4SLsWkG7tmCHWrSDJUuUjy4e3TTsD8K41HuCKczGrl4y8DBB0dG5fkBshgZu8n7Ok2T5PW2mnq27qxUgvquiZBxc06MaeKcU5LlvTG2SFYxhewUXQYVWYSJYRznN-GnHthqNtxMFQPk6HRsTNPpLRK5CuWwbo9daAb9sBYmHyBsmwdiS3P2-BSNrp57tpbVl1BmiDqqC1AIs1z4Lm0rlkO0eoAbD6yTcj82JbIuP2s2rrtx6XyA9aar4KZCwubzqo9a5K5r0TY3TfFy26BkAgSBl+3OoZzKfPjR155tbFtGeH2-vjB5Lh6zH3D+ofK9Jaux64Ce68T+XG7Zd5vGTCw25zCUudcZxkKwyrHVZA+xaji2pLYPANgWBOToAAIzAGiKeMMZ6Ozno8Bejh4HL3MmvDGQVzg93qCaA0FR7jfzNkfS2FAgEgPAZAu20CVKwPUvoLMrY2QaB6P4Cou0falHeAHfqkoUx8FLudHAyQaBQBIAQbAMh1rqgvg3OeH1s5eE8D0bwcYfhjV+C7B0AUjD6k+I6KygjhGiPYMgZAUCOpUIyjQs4mheGFyZDcO4+kMbJhdnUAKmN3G0KNkCLg7AVrwF2CCB2FjigsCuBcYUqhriGDcLg3kLB3CfW+h4dxNxhZBJeogUJcT4zfWzpKHqnJQ78PLvKUk6Tk7gV5G45m+U2RwTZKcY2pTwarVSOUhW3tmiOltDeMU1QxQGg8E08W5IYRQHaduVw7xfjOlTgWRhp54IJmFA6fUBgDC3mGb-bASoVQTMykhJw2hdA4IlNg1BjIujlGxKYOMPE-h8JLCTT0z45z7PUsKSC+5bndDcHfKpnR-YzV9g8zGdRhmvKIpTJc7zvK8KOZ-MwvzhSfFPMKdo1o3jCjjMvbCxTlpelskRGO5F-HmIySne4HxhT6A7svDQiFMblGvByXQgtqgQqJa+f+1t5KwpjGoeMI1zBGBTKYXsJUkILxZfYg02cOVl3igQRKZZ+V8lQGNUVCY+ruCRUKM4jzcKLWVU1R8rSCBqrYszDwRkTR9FbA4TWCSxQQV6GYCUvt8HkzVUdZmPc2YPB4pzH2OMUJXEdGKfwHhJReu2dCtpMDgmMk8BcVoFlTrwVbJrKomgeJ3GxMFZCXj8WXR-lXUeUs4BqtUC7E0AUag6GxQNXOTEhzaHbYKw1IlSZlsIf-WOP5LUSnjD8bQngKjKIZevG05RcYKIgjM2N5aeXjxIJagmzMdCnG3aYAwms0wfCHEGyNqTFWloIZCIhgDgGJDARAy1DwekVDyn4P4Cz15XK3pcINrhrxnSeQIoRIi1UsANOEgwVwTQOj8FUdGYFTQXHAu2vuOgibFP0SIsRakk7NjuIaJCDoehmGLhmH2h1Jr3FXmYa4nQ9FAcMcYtVf1rG6A8PUPovh3CqOqtxe4jh9CwQVUEIAA */
+  id: "f91w",
+  type: "parallel",
   states: {
-    dateTime: {
-      initial: "default",
+    watch: {
+      initial: "dateTime",
       states: {
-        default: {
+        dateTime: {
+          initial: "default",
+          states: {
+            default: {
+              on: {
+                "a-down": {
+                  target: "Holding",
+                },
+              },
+            },
+            Holding: {
+              entry: "toggleTimeMode",
+              after: {
+                "3000": "casio",
+              },
+              on: {
+                "a-up": {
+                  target: "default",
+                },
+              },
+            },
+            casio: {
+              on: {
+                "a-up": {
+                  target: "default",
+                },
+              },
+            },
+          },
           on: {
+            "c-down": {
+              target: "dailyAlarm",
+              actions: "playBip",
+            },
+          },
+        },
+        dailyAlarm: {
+          initial: "default",
+          states: {
+            default: {
+              on: {
+                "l-down": {
+                  target: "edit-hours",
+                  actions: "enableAlarmOnMark",
+                },
+              },
+            },
+            "edit-hours": {
+              on: {
+                "l-down": {
+                  target: "edit-minutes",
+                },
+                "a-down": {
+                  actions: "incrementAlarmHours",
+                },
+              },
+            },
+            "edit-minutes": {
+              on: {
+                "l-down": {
+                  target: "default",
+                },
+                "a-down": {
+                  actions: "incrementAlarmMinutes",
+                },
+              },
+            },
+          },
+          on: {
+            "c-down": {
+              target: "stopwatch",
+              actions: "playBip",
+            },
             "a-down": {
-              target: "Holding",
+              actions: ["toggleAlarmMode", "playBip"],
             },
           },
         },
-        Holding: {
-          entry: "toggleTimeMode",
-          after: {
-            "3000": "casio",
+        stopwatch: {
+          initial: "default",
+          states: {
+            default: {
+              on: {
+                "a-down": { actions: ["toggleStopwatch", "playBip"] },
+                "l-down": { actions: "toggleSplitOrClearStopwatch" },
+              }
+            },
           },
           on: {
-            "a-up": {
-              target: "default",
+            "c-down": {
+              target: "setDateTime",
+              actions: "playBip",
             },
           },
         },
-        casio: {
+        setDateTime: {
+          initial: "default",
+          states: {
+            default: {
+              on: {
+                "l-down": {
+                  target: "edit-minutes",
+                },
+                "a-down": { actions: "resetTimeSeconds" },
+              },
+            },
+            "edit-minutes": {
+              on: {
+                "l-down": {
+                  target: "edit-hours",
+                },
+                "a-down": { actions: "incrementTimeMinutes" },
+              },
+            },
+            "edit-hours": {
+              on: {
+                "l-down": {
+                  target: "edit-month",
+                },
+                "a-down": { actions: "incrementTimeHours" },
+              },
+            },
+            "edit-month": {
+              on: {
+                "l-down": {
+                  target: "edit-day-number",
+                },
+                "a-down": { actions: "incrementDateMonth" },
+              },
+            },
+            "edit-day-number": {
+              on: {
+                "l-down": {
+                  target: "default",
+                },
+                "a-down": { actions: "incrementDateDay" },
+              },
+            },
+          },
           on: {
-            "a-up": {
-              target: "default",
+            "c-down": {
+              target: "dateTime",
+              actions: "playBip",
             },
           },
-        },
-      },
-      on: {
-        "c-down": {
-          target: "dailyAlarm",
-          actions: "playBip",
         },
       },
     },
-    dailyAlarm: {
-      initial: "default",
+    light: {
+      initial: "off",
       states: {
-        default: {
-          on: {
-            "l-down": {
-              target: "edit-hours",
-              actions: "enableAlarmOnMark",
-            },
-          },
-        },
-        "edit-hours": {
-          on: {
-            "l-down": {
-              target: "edit-minutes",
-            },
-            "a-down": {
-              actions: "incrementAlarmHours",
-            },
-          },
-        },
-        "edit-minutes": {
-          on: {
-            "l-down": {
-              target: "default",
-            },
-            "a-down": {
-              actions: "incrementAlarmMinutes",
-            },
-          },
-        },
-      },
-      on: {
-        "c-down": {
-          target: "stopwatch",
-          actions: "playBip",
-        },
-        "a-down": {
-          actions: ["toggleAlarmMode", "playBip"],
-        },
-      },
-    },
-    stopwatch: {
-      initial: "default",
-      states: {
-        default: {
-          on: {
-            "a-down": { actions: ["toggleStopwatch", "playBip"] },
-            "l-down": { actions: "toggleSplitOrClearStopwatch" },
-          }
-        },
-      },
-      on: {
-        "c-down": {
-          target: "setDateTime",
-          actions: "playBip",
-        },
-      },
-    },
-    setDateTime: {
-      initial: "default",
-      states: {
-        default: {
-          on: {
-            "l-down": {
-              target: "edit-minutes",
-            },
-            "a-down": { actions: "resetTimeSeconds" },
-          },
-        },
-        "edit-minutes": {
-          on: {
-            "l-down": {
-              target: "edit-hours",
-            },
-            "a-down": { actions: "incrementTimeMinutes" },
-          },
-        },
-        "edit-hours": {
-          on: {
-            "l-down": {
-              target: "edit-month",
-            },
-            "a-down": { actions: "incrementTimeHours" },
-          },
-        },
-        "edit-month": {
-          on: {
-            "l-down": {
-              target: "edit-day-number",
-            },
-            "a-down": { actions: "incrementDateMonth" },
-          },
-        },
-        "edit-day-number": {
-          on: {
-            "l-down": {
-              target: "default",
-            },
-            "a-down": { actions: "incrementDateDay" },
-          },
-        },
-      },
-      on: {
-        "c-down": {
-          target: "dateTime",
-          actions: "playBip",
-        },
+        on: { on: { "l-up": "off" } },
+        off: { on: { "l-down": "on" } }
       },
     },
   },

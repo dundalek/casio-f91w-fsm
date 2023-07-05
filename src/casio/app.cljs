@@ -147,16 +147,17 @@
                                 #js {:devTools inspect?})]
 
     (.subscribe actor (fn [snapshot]
-                        (js/console.log
-                         "Value:" (.-value snapshot)
-                         "Context:" (.-context snapshot))
                         (let [context ^js (.-context snapshot)
-                              activeMenu (-> (.-value snapshot)
+                              watch-value ^js (.-value.watch snapshot)
+                              light-value ^js (.-value.light snapshot)
+                              activeMenu (-> watch-value
                                              (js/Object.keys)
                                              (first))
-                              activeAction (gobj/get (.-value snapshot) activeMenu)]
+                              activeAction (gobj/get watch-value activeMenu)]
+                          (js/console.log "Value:" watch-value "Context:" context)
                           (set! (.-activeMenu os) activeMenu)
                           (set! (.-activeAction os) activeAction)
+                          (set! (.-light os) (= light-value "on"))
                           (js/Object.assign os (j/select-keys context
                                                               [:timeMode
                                                                :alarmOnMark
