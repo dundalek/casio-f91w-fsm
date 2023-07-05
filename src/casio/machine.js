@@ -1,7 +1,7 @@
 import { createMachine } from "xstate";
 
 export const machine = createMachine({
-  /** @xstate-layout N4IgpgJg5mDOIC5QDMCcBGA7gOkwQwBcBjAC2wkLABUBLAWzAGIiBaCAe0wDsBtABgC6iUAAd2sGgRrsuwkAA9EADgBsS7ABYATFvQB2JXyUBmVKiV6ANCACeiFcfTZjAVlTG9GvRj6o+egF8A6zQsXEJSckpaBnIwZDwAVwAbAkY8Nk5eQTkxCSkZOUUELVNsPgq+FQ0qlxd9dGs7BD1-bAM+YyV0dFQa81QgkIwcfGIyCgJqejBsAAl2ZIgaLih0lkSRfiEkEDzJaVld4q0VPmwXFS0Ncy09PRU3FSb7Fz1sLUMPFRU9N7+VEMQKFRhEJtEZvNFstVox5LACJRsHhkFMAE4ACmMlQAlIwQeFxlEpjFZgslisoNtcuIDoVjogXBZ2sYNHU+qgtBUbi8EL8NNgVKhWto+F50EpzECCWNIpNprEiHgJOx1ptqbt9gUjqBiip0ALHKcNEpDD9flpeS4tKhNF4+C5TL0rr5pSNCXK8DRkjYAILJPBoujMTLcDWiWnaoqICWoFzYdCXPRc7zGH51K2-doaM6cpl9VqDYLA92y8Hev0BoPrDhhnKayOHaMIdA-LTZn5pzo9Yy8m0CryPH5x3zWpRusJlqIV-2BuhxBIpNLJUPZHYR-JNhktg3qNmshym3fmXlqdu5771JRvLQuCegokUGdV+eQSQsEjsRJo2CMFe1tcaU3eldRjFwNGMBNLjca4-BcMVeT0dB2yZNxHE5E14MCYsZTBacfVnINsDfAgPy-H8ayycM9kbECFBjVknD+Tp-n0AwTFPZCE2MT5SlUVl4PHHDSzwp8CJfYjllIugVkSKZf3-Kj6w3OkdXoltwMgxNHgwuCENsRAbicLpeNbMVPgwe8PXLcS50k98ZK4OS4Eout1xo4C1OKVtrQTW8NG0dAHQqW9OIFBxeK6Bw2SMKypwRdgRDLEMAOorUt1AhBTHOCx4PtALXE6KwDJbPjnFNB0dCUU5PA0OK8ISpLRPiJJUlcwCG085tEycJQIL0HjJQeILE15ZDHkFLp-Gq6rTCZeqiUaqcIBapc-1XNLaK8mN9DG1tbTUG5rXcIwhOGScGrAAgABEIQYFKlPc9K6OKbReW6TQzC+4UHGMbEtAWyJYCu26SUhFbFzaxS3KA1Tm2Td5Sn6g99TjYrmnQRwBT4bTsQNE0LDq4SLsWkG7tmCHWrSDJUuUjy4e3TTsD8K41HuCKczGrl4y8DBB0dG5fkBshgZu8n7Ok2T5PW2mnq27qxUgvquiZBxc06MaeKcU5LlvTG2SFYxhewUXQYVWYSJYRznN-GnHthqNtxMFQPk6HRsTNPpLRK5CuWwbo9daAb9sBYmHyBsmwdiS3P2-BSNrp57tpbVl1BmiDqqC1AIs1z4Lm0rlkO0eoAbD6yTcj82JbIuP2s2rrtx6XyA9aar4KZCwubzqo9a5K5r0TY3TfFy26BkAgSBl+3OoZzKfPjR155tbFtGeH2-vjB5Lh6zH3D+ofK9Jaux64Ce68T+XG7Zd5vGTCw25zCUudcZxkKwyrHVZA+xaji2pLYPANgWBOToAAIzAGiKeMMZ6Ozno8Bejh4HL3MmvDGQVzg93qCaA0FR7jfzNkfS2FAgEgPAZAu20CVKwPUvoLMrY2QaB6P4Cou0falHeAHfqkoUx8FLudHAyQaBQBIAQbAMh1rqgvg3OeH1s5eE8D0bwcYfhjV+C7B0AUjD6k+I6KygjhGiPYMgZAUCOpUIyjQs4mheGFyZDcO4+kMbJhdnUAKmN3G0KNkCLg7AVrwF2CCB2FjigsCuBcYUqhriGDcLg3kLB3CfW+h4dxNxhZBJeogUJcT4zfWzpKHqnJQ78PLvKUk6Tk7gV5G45m+U2RwTZKcY2pTwarVSOUhW3tmiOltDeMU1QxQGg8E08W5IYRQHaduVw7xfjOlTgWRhp54IJmFA6fUBgDC3mGb-bASoVQTMykhJw2hdA4IlNg1BjIujlGxKYOMPE-h8JLCTT0z45z7PUsKSC+5bndDcHfKpnR-YzV9g8zGdRhmvKIpTJc7zvK8KOZ-MwvzhSfFPMKdo1o3jCjjMvbCxTlpelskRGO5F-HmIySne4HxhT6A7svDQiFMblGvByXQgtqgQqJa+f+1t5KwpjGoeMI1zBGBTKYXsJUkILxZfYg02cOVl3igQRKZZ+V8lQGNUVCY+ruCRUKM4jzcKLWVU1R8rSCBqrYszDwRkTR9FbA4TWCSxQQV6GYCUvt8HkzVUdZmPc2YPB4pzH2OMUJXEdGKfwHhJReu2dCtpMDgmMk8BcVoFlTrwVbJrKomgeJ3GxMFZCXj8WXR-lXUeUs4BqtUC7E0AUag6GxQNXOTEhzaHbYKw1IlSZlsIf-WOP5LUSnjD8bQngKjKIZevG05RcYKIgjM2N5aeXjxIJagmzMdCnG3aYAwms0wfCHEGyNqTFWloIZCIhgDgGJDARAy1DwekVDyn4P4Cz15XK3pcINrhrxnSeQIoRIi1UsANOEgwVwTQOj8FUdGYFTQXHAu2vuOgibFP0SIsRakk7NjuIaJCDoehmGLhmH2h1Jr3FXmYa4nQ9FAcMcYtVf1rG6A8PUPovh3CqOqtxe4jh9CwQVUEIAA */
+  /** @xstate-layout N4IgpgJg5mDOIC5QDMCcBGA7gOkwQwBcBjAC2wkLABUBLAWzAGIiBaCAe0wDsBtABgC6iUAAd2sGgRrsuwkAA9EAZgBMADj7Z1qVQBYMSvgDYA7AFYANCACeiE0qPZ0Zo+lQmTrtSZVGAvn5WaFi4hKTklLQM5GDIeACuADYEjHhsnLyCcmISUjJyigi+Zppqpir6JqhGKuhqVrYIaugq2GYe6Ca6hu6oqLoBQRg4+MRkFATU9GDYABLsiRA0XFCpLPEi-EJIIDmS0rI7hb4+2Loq1WXofGrdZroNdjXYfB1GN-q6fEpqgyDBIzC40i0zmCyWK0Y8lgBEo2DwyEmACcABSGPh8ACUjABoTGEUmURm80WyygW2y4n2+SOiAufWw73QRjMvn0OiUDxsdiqZx0ahcRgwKhK6D+uNG4QmU2iRDwEnYaw2FJ2ezyh1AhUMvicVXMIuqGGqjwQRk5Wm6Gma3RUKgc4uGeKleBoiWsAEFEngkXRmOluCrRFT1QVlOpNNo9AZjOYTc5NH0+jVOV0TK9-IF-o7JcDXR6vT6YnEkilEv7Mtsg7kDqGEEozA3sKpvmZvBclFUTWZUJpTKhu5z698yg6QjmInnPd66EWEsk1hwA1lVcGa7S6w2zE2VC22zpO9yELo6ozup0TC0+LauqPAfiKJOCzOILE5ylWIuK5TqzTNYg1CoJr9L2GKuF0V72LoJi3k6uZulOhZ0OwSzIDQkCMGWn6Brsq6-goyioCoJgvAKHg6KY9hKEoJq6FBWjfHwPaoGUqhmGKmYSkCE7wU+2BIShaEQAuGTYWqa5-nWXRqIynS1GYSidD2domlRujYMBxh8IpHauEoMHjg+PHTtgkCSCwJDsPESKwBh5aibhGr4UeqjoNgJhqGofSMbophlCaulnMYzhpj4hjoOxQxjlxhn5sZpkEOZlnWcJS6VjhP6OYUx47k2AFmt2LgikYXYtOp8laWaHY-Fe+nRS6RmFvFLB0Ms8STDZmEicuVbUpliA2q57meUxPnucVh6qI4ujlbcRUtD4tX3vVsWNUsCUtVwbVwClX4rhlta0YYbntCy-TucxgGHmxW7TaoO6MQ4tQDBx2ZcTC7AiDmfpYd16W9bWHRuey7y2p0+gmvYW53Wohg+RgLK-C9UX4u9n3Ra+JY7fZ+3rhU0mJtURhlHwwPUVd9zYJ5CmGEY+j1q4i3hKjBkY-OnWpd+-247o+OJkYRPvKTNGtupSh9MN6CHXTjNkMz6PFvOH5dWlYl4YUgNdEmV61JrNE+epF4XOF9bXTL2By-i-E0Kh6FpD9KsObWrLERe3ivDchMXjRZrqV8fAuF05xphUZsW+EVs20J7O7T1IbrvorTePo+XHi03QqaY6llPDGI6HTelI3eTNgAQAAiIIMN9yuc3HEl2u8lMODcWnnNleuOO4LQYOgJuS6gocl+XhKgi+CulnZv2q31CDhTcTiMeerY992Xa3G0nyGyTDhuAPZcVzMo9vljk+O+uhFqe54VmlpJQNmTjRQY4Wl3S0HnyW4Zi70PMozE1G1bR1CeDscYSUlhUNydRVBplcAHLkjRuyDT6NNZuzQhpf33iZNazVWrtWPsArmoCdYvA8LcVwy97ioBohgJsPkOxVEIhiW+6Dh7RCahZKygD7Y13Ek5WSqA3IQXMD5FwacuwMhJv2Hc7hvgigLpFIustB4YLYUlGydtq57QIbw+SShGRtnKETcwksqHSW7GaFoCl+YuGqMwn+mCzJIS4AQEgtkuGaNrk5HcDhApkOcDuTyLJ-LGC0EghsFxKjmFsUSex60ZDOLwdwtWiBIHSVMJ0Zw5Qqi0y7P7SmtDJYuEYSyKJoImoUGsCwTadAABGYAkSuI0bHHhxxvhTSCuFVkHtAkTTTG0aoHYWheFeBFLMyNi57xYb-LB5TKnxBqXUhJ7jml0kltJb4RotLuUsXAxAJRpKchZJA5kFxPCf0LtgRINAoAkAINgGQtllQnxAZ4nKhUvgKR8BeEwcZJZP3kmksWbJnryIuVcm5dzkDIAaRzJZSSZ7MXUnzAWEj+zfMPOFaobR-m3AFIYMWGZMxcGQnAOQAJEnTxYERE0lK1IYjpfS+lksZbktrLUfyuj2TMXCvYSGHYzbSiJCy7mLJKblAAjodokCuz6y6D8XwhoeYw35Rgw+JYhV1zYrosoPhxX1ldvfRAtM1IOA8h0m4d0MwgoMhgkkEIoDqs8Z4fh8kMANh8AjHQEMKZ9B+KsyCtRLWjIUQSOxcoFQOq1BYrQnlbSgxKPYcajRaaJyIpLAZfQXByKDbBbiK06ARuUD8KGO5nbQI7DsooPwyp4rYmaI1nhlWPmMqq5IBa6zdF0c2Utxhy3+R7upIK7RXh2i0ioRtDUZwR0Em2uhjgBTOGaDDHuzhvatAOVRVp-MfJEXHXmmJiUOFtuPI2Qi-Zzjtg7JYQ8AUewwJCiOlou6EIzj-jgklsLp60R9pBcKRsxbfD7W0moFQ+jXB5mO8544w4kDbUKE04YzhuwgvcbeocCAfRZmPNt3KIZVtbv+roPcLhnKtW9dDaNLbIWttOj9Tt5KUzTu5aa4VvBiNcuu+VCl7gkxKQwNt3hHCX2ZGFW+8l4MwxeP00GQo9CBs4ijJRkzZxqto2fRstE2JlG1aig1CATrqX5raLwBVvC8amQ4t98BVOELovWHsGLPI90TbswiIT+x1HdYROTr0FMTLsSow91ntH8zaD8cwV5GItjRfAhkFDbr+2Cs0Mz+7HHOOw9nNy1Q0xfBqMyWM17gn0Omqyfo7gbyQbeop-z0y8AVKqbUpEba5KaEvQlnVzcr1JsYm51kLkOwVBI9my51yCBNYrdcEWd9zDNB0m6mCw3wV4SnrWBSrRLj5UBUKe4PyKZmjTMYQ0OloLnIW7c9gkK20+B260Hu+2hQyc8M9AIQA */
   id: "f91w",
   type: "parallel",
   states: {
@@ -53,6 +53,26 @@ export const machine = createMachine({
                   target: "edit-hours",
                   actions: "enableAlarmOnMark",
                 },
+                "a-down": {
+                  target: "modified",
+                  actions: ["toggleAlarmMode", "playBip"],
+                },
+                "c-down": {
+                  target: "#f91w.watch.stopwatch",
+                  actions: "playBip",
+                },
+              },
+            },
+            modified: {
+              on: {
+                "l-down": {
+                  target: "edit-hours",
+                  actions: "enableAlarmOnMark",
+                },
+                "a-down": {
+                  target: "modified",
+                  actions: ["toggleAlarmMode", "playBip"],
+                },
               },
             },
             "edit-hours": {
@@ -68,7 +88,7 @@ export const machine = createMachine({
             "edit-minutes": {
               on: {
                 "l-down": {
-                  target: "default",
+                  target: "modified",
                 },
                 "a-down": {
                   actions: "incrementAlarmMinutes",
@@ -78,11 +98,8 @@ export const machine = createMachine({
           },
           on: {
             "c-down": {
-              target: "stopwatch",
+              target: "dateTime",
               actions: "playBip",
-            },
-            "a-down": {
-              actions: ["toggleAlarmMode", "playBip"],
             },
           },
         },
@@ -91,14 +108,24 @@ export const machine = createMachine({
           states: {
             default: {
               on: {
+                "a-down": { target: "modified", actions: ["toggleStopwatch", "playBip"] },
+                "l-down": { target: "modified", actions: "toggleSplitOrClearStopwatch" },
+                "c-down": {
+                  target: "#f91w.watch.setDateTime",
+                  actions: "playBip",
+                },
+              },
+            },
+            modified: {
+              on: {
                 "a-down": { actions: ["toggleStopwatch", "playBip"] },
                 "l-down": { actions: "toggleSplitOrClearStopwatch" },
-              }
+              },
             },
           },
           on: {
             "c-down": {
-              target: "setDateTime",
+              target: "dateTime",
               actions: "playBip",
             },
           },
