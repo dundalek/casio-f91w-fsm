@@ -3,7 +3,8 @@
    ["xstate" :as xstate]
    [applied-science.js-interop :as j]
    [goog.object :as gobj]
-   ["/casio/machine" :refer [machine]]))
+   ["/casio/machine" :refer [machine]]
+   ["@xstate/inspect" :refer [inspect]]))
 
 (defn make-time [hours minutes seconds]
   (doto (js/Date.)
@@ -14,7 +15,10 @@
 (defn assign-context [f]
   (xstate/assign
    (fn [^js params]
-     (f (.-context params)))))
+     ;; for xstate v4
+     (f params)
+     ;; for v5
+     #_(f (.-context params)))))
 
 (defn update-datetime-handler [f]
   (assign-context
@@ -81,7 +85,14 @@
 
 (defn ^:export  main []
   (let [os (js/CasioF91WOperatingSystem.)
-        actor (xstate/interpret watch-machine)]
+        inspect? false
+        _ (when inspect?
+            (let [iframe (js/document.createElement "iframe")]
+              (set! (.-style iframe) "flex-grow: 1; align-self: stretch;")
+              (.appendChild js/document.body iframe)
+              (inspect #js {:iframe iframe})))
+        actor (xstate/interpret watch-machine
+                                #js {:devTools inspect?})]
 
     (.subscribe actor (fn [snapshot]
                         (js/console.log

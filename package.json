@@ -1,6 +1,7 @@
 {
   "private": true,
   "devDependencies": {
-    "xstate": "^5.0.0-beta.15"
+    "@xstate/inspect": "^0.8.0",
+    "xstate": "^4.38.0"
   }
 }
