@@ -60,14 +60,13 @@
           :incrementDateDay (update-datetime-handler #(.setDate % (inc (.getDate %))))}))
 
 (def watch-machine
-  (xstate/createMachine (js/Object.assign #js {}
-                                          (.-config machine)
-                                          (j/lit {:context {:timeMode "24"
-                                                            :alarmOnMark false
-                                                            :timeSignalOnMark false
-                                                            :dailyAlarmDateTime (make-time 7 0 0)
-                                                            :dateTimeOffset 0}}))
-                        #js {:actions actions}))
+  (-> machine
+      (.withConfig #js {:actions actions})
+      (.withContext (j/lit {:timeMode "24"
+                            :alarmOnMark false
+                            :timeSignalOnMark false
+                            :dailyAlarmDateTime (make-time 7 0 0)
+                            :dateTimeOffset 0}))))
 
 (defn bind-events [actor]
   (let [button-l (js/document.querySelector "#buttonL")
