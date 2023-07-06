@@ -1,17 +1,26 @@
 {:deps true
 
- :dev-http {8888 ["demo" "demo/test"]}
+ :dev-http {8888 ["build" "demo" "build/test"]}
 
  :nrepl {:write-port-file true}
 
  :builds
  {:app {:target :browser
-        :output-dir "demo/js"
+        :output-dir "build/js"
         :asset-path "/js"
         :modules {:app {:entries [casio.app]
                         :init-fn casio.app/main}}
         :devtools {:reload-strategy :full
                    :preloads [devtools.preload]}}
 
+  ;; Separate target from :app because the output is to demo/ dir which which can be deployed as a whole.
+  :app-release {:target :browser
+                :output-dir "demo/js"
+                :modules {:app {:entries [casio.app]
+                                :init-fn casio.app/main}}}
+                ;; Closure compiler seemed to mangle state machine keys.
+                ;; Found a workaround for now but simple optimizations would be another way out.
+                ; :compiler-options {:optimizations :simple}
+
   :test {:target :browser-test
-         :test-dir "demo/test"}}}
+         :test-dir "build/test"}}}

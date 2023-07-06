@@ -1,5 +1,5 @@
 /demo/js
-/demo/test
+/build
 node_modules
 .idea
 .clj-kondo

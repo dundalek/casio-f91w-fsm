@@ -1,4 +1,11 @@
 {:tasks
  {dev
   {:doc "Start shadow-cljs dev server"
-   :task (shell "clojure -M:shadow -m shadow.cljs.devtools.cli watch app test")}}}
+   :task (shell "clojure -M:shadow -m shadow.cljs.devtools.cli watch app test")}
+
+  build
+  {:doc "Production build"
+   :requires ([babashka.fs :as fs])
+   :task (do
+           (fs/delete-tree "demo/js")
+           (shell "clojure -M:shadow -m shadow.cljs.devtools.cli release app-release"))}}}
