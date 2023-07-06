@@ -8,4 +8,9 @@
    :requires ([babashka.fs :as fs])
    :task (do
            (fs/delete-tree "demo/js")
-           (shell "clojure -M:shadow -m shadow.cljs.devtools.cli release app-release"))}}}
+           (shell "clojure -M:shadow -m shadow.cljs.devtools.cli release app-release"))}
+
+  deploy
+  {:doc "Deploy to Cloudflare Pages"
+   :depends [build]
+   :task (shell "npx wrangler pages deploy demo")}}}

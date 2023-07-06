@@ -1,7 +1,9 @@
 {
+  "name": "casio-f91w",
   "private": true,
   "devDependencies": {
     "@xstate/inspect": "^0.8.0",
+    "wrangler": "^3.1.1",
     "xstate": "^4.38.0"
   }
 }
