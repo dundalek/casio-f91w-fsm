@@ -106,7 +106,7 @@ svg {
     width: 550px; */
     height: auto;
     width: 40%;
-    margin: 0 10px 0 10px;
+    margin: 30px;
     animation: shadow 10s infinite;
     z-index: 2;
 }
