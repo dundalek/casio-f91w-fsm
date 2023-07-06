@@ -15,12 +15,12 @@ export const machine = createMachine({
             "default": {
               on: {
                 "a-down": {
-                  target: "Holding",
+                  target: "holding",
+                  actions: "toggleTimeMode",
                 },
               },
             },
-            "Holding": {
-              entry: "toggleTimeMode",
+            "holding": {
               after: {
                 "3000": "casio",
               },

@@ -153,7 +153,12 @@
                               activeMenu (-> watch-value
                                              (js/Object.keys)
                                              (first))
-                              activeAction (gobj/get watch-value activeMenu)]
+                              activeAction (gobj/get watch-value activeMenu)
+                              ;; The `holding` and `modified` states are part of the machine for accuracy of the model,
+                              ;; but such actions are not present in the original implementation,
+                              ;; so we render the `default` action insted of them.
+                              activeAction (if (#{"holding" "modified"} activeAction)
+                                             "default" activeAction)]
                           (js/console.log "Value:" watch-value "Context:" context)
                           (set! (.-activeMenu os) activeMenu)
                           (set! (.-activeAction os) activeAction)
