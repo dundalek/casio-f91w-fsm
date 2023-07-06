@@ -54,6 +54,7 @@ aside.top-left {
     position: absolute;
     top: 40px;
     left: 40px;
+    z-index: 1;
 }
 
 aside.bottom-right {
@@ -85,6 +86,7 @@ section {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 }
 
 .col {
@@ -106,6 +108,7 @@ svg {
     width: 40%;
     margin: 0 10px 0 10px;
     animation: shadow 10s infinite;
+    z-index: 2;
 }
 
 /* TODO: make this in JS class? */
