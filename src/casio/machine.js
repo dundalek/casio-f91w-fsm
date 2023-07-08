@@ -22,7 +22,7 @@ export const machine = createMachine({
             },
             "holding": {
               after: {
-                "3000": "casio",
+                3000: "casio",
               },
               on: {
                 "a-up": {
@@ -137,25 +137,25 @@ export const machine = createMachine({
             "default": {
               on: {
                 "l-down": {
-                  target: "edit-minutes",
-                },
-                "a-down": { actions: "resetTimeSeconds" },
-              },
-            },
-            "edit-minutes": {
-              on: {
-                "l-down": {
                   target: "edit-hours",
                 },
-                "a-down": { actions: "incrementTimeMinutes" },
+                "a-down": { actions: "resetTimeSeconds" },
               },
             },
             "edit-hours": {
               on: {
                 "l-down": {
-                  target: "edit-month",
+                  target: "edit-minutes",
                 },
                 "a-down": { actions: "incrementTimeHours" },
+              },
+            },
+            "edit-minutes": {
+              on: {
+                "l-down": {
+                  target: "edit-month",
+                },
+                "a-down": { actions: "incrementTimeMinutes" },
               },
             },
             "edit-month": {
