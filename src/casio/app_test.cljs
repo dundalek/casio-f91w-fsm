@@ -3,7 +3,8 @@
    ["xstate" :as xstate]
    [casio.app :refer [watch-machine make-machine]]
    [clojure.test :refer [async deftest is testing]]
-   [statecharts.core :as fsm]))
+   [statecharts.core :as fsm]
+   [statecharts.service :as service]))
 
 (def ^:dynamic *bip-counter* nil)
 
@@ -12,43 +13,48 @@
       "Unexpected playBip action. Wrap in `with-expected-bip` in case it is expected.")
   (swap! *bip-counter* inc))
 
-(defn state-value [^Actor actor]
-  (js->clj (.-value (.getSnapshot actor))
-           :keywordize-keys true))
-
-(defn get-context [^Actor actor]
-  (js->clj (.-context (.getSnapshot actor))
-           :keywordize-keys true))
-
-(defn send [actor event]
-  (assert (keyword? event))
-  (.send actor #js {:type (name event)}))
-
 (defn make-xstate-watch-actor []
   (let [actor (-> watch-machine
-                  (.withConfig
-                   #js {:actions #js {:playBip play-bip-mocked}})
-
+                  (.withConfig #js {:actions #js {:playBip play-bip-mocked}})
                   xstate/interpret)]
     (.start actor)
     actor))
+
+(deftype XStateService [actor]
+  service/IService
+  (start [_this]
+    (.start actor))
+  (send [_this event]
+    (assert (keyword? event))
+    (.send actor #js {:type (name event)}))
+  (state [_this]
+    (let [context (js->clj (.-context (.getSnapshot actor))
+                           :keywordize-keys true)
+          value (js->clj (.-value (.getSnapshot actor))
+                         :keywordize-keys true)
+          ret (assoc context :_state value)]
+      ret))
+  (add-listener [_this _id _listener]
+    (throw (js/Error. "Not implemented")))
+  (reload [_this _fsm]
+    (throw (js/Error. "Not implemented"))))
 
 (defn transform-state [state]
   (cond (keyword? state) (name state)
         (vector? state) {(first state)
                          (name (second state))}
         :else state))
-;
-; (defn state-value [actor]
-;   (-> (fsm/value actor)
-;       (update-vals transform-state)))
-;
-; (defn get-context [actor]
-;   (fsm/state actor))
-;
-; (defn send [actor event]
-;   (assert (keyword? event))
-;   (fsm/send actor {:type event}))
+
+(defn state-value [actor]
+  (-> (fsm/value actor)
+      (update-vals transform-state)))
+
+(defn get-context [actor]
+  (fsm/state actor))
+
+(defn send [actor event]
+  (assert (keyword? event))
+  (fsm/send actor event))
 
 (defn make-clj-statecharts-watch-actor []
   (let [action-overrides {:playBip play-bip-mocked}
@@ -59,8 +65,8 @@
     service))
 
 (defn test-machine [f]
-  ; (f (make-clj-statecharts-watch-actor))
-  (f (make-xstate-watch-actor)))
+  (f (make-clj-statecharts-watch-actor))
+  (f (->XStateService (make-xstate-watch-actor))))
 
 (defn with-expected-bip [f]
   (let [!counter (atom 0)]
