@@ -22,7 +22,6 @@
     (.subscribe actor
                 (fn [snapshot]
                   (listener nil (snapshot->state snapshot)))))
-
   (reload [_this _fsm]
     (throw (js/Error. "Not implemented"))))
 

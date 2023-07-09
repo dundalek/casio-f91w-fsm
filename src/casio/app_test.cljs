@@ -4,7 +4,8 @@
    [casio.app :refer [watch-machine make-machine]]
    [clojure.test :refer [async deftest is testing]]
    [statecharts.core :as fsm]
-   [casio.xstate :refer [->XStateService]]))
+   [casio.xstate :refer [->XStateService]]
+   [casio.statecharts :refer [state-value]]))
 
 (def ^:dynamic *bip-counter* nil)
 
@@ -19,16 +20,6 @@
                   xstate/interpret)]
     (.start actor)
     actor))
-
-(defn transform-state [state]
-  (cond (keyword? state) (name state)
-        (vector? state) {(first state)
-                         (name (second state))}
-        :else state))
-
-(defn state-value [actor]
-  (-> (fsm/value actor)
-      (update-vals transform-state)))
 
 (defn get-context [actor]
   (fsm/state actor))

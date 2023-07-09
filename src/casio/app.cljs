@@ -4,12 +4,12 @@
    ["@xstate/inspect" :refer [inspect]]
    ["xstate" :as xstate]
    [applied-science.js-interop :as j]
+   [casio.statecharts :refer [transform-state]]
+   [casio.xstate :refer [->XStateService]]
    [clojure.string :as str]
    [clojure.walk :as walk]
-   [goog.object :as gobj]
    [statecharts.core :as fsm]
-   [statecharts.service :as service]
-   [casio.xstate :refer [->XStateService]]))
+   [statecharts.service :as service]))
 
 (defn make-time [hours minutes seconds]
   (doto (js/Date.)
@@ -73,10 +73,9 @@
 (defn xstate-assign-context [f]
   (xstate/assign
    (fn [^js params]
-     ;; for xstate v4
-     (clj->js (f (js->clj params :keywordize-keys true)))
-     ;; for v5
-     #_(f (.-context params)))))
+     (let [context params] ; for xstate v4
+           ;context (.-context params) ; for v5
+       (clj->js (f (js->clj context :keywordize-keys true)))))))
 
 (def watch-machine
   (-> machine/machine
@@ -101,6 +100,33 @@
     (.addEventListener button-a "mousedown" #(fsm/send actor :a-down))
     (.addEventListener button-a "mouseup" #(fsm/send actor :a-up))))
 
+(defn set-os-state! [^js os new]
+  (let [{:keys [watch light]} (:_state new)
+        watch-state (transform-state watch)
+        active-menu (first (keys watch-state))
+        active-action (get watch-state active-menu)
+        ;; The `holding` and `modified` states are part of the machine for accuracy of the model,
+        ;; but such actions are not present in the original implementation,
+        ;; so we render the `default` action insted of them.
+        ;; Otherwise for example time does not increment when holding A on the time screen.
+        active-action (if (#{"holding" "modified"} active-action)
+                        "default" active-action)]
+    (set! (.-activeMenu os) (name active-menu))
+    (set! (.-activeAction os) active-action)
+    (set! (.-light os) (= (transform-state light) "on"))
+    (js/Object.assign os (-> (select-keys new
+                                          [:timeMode
+                                           :alarmOnMark
+                                           :timeSignalOnMark
+                                           :dailyAlarmDateTime
+                                           :dateTimeOffset
+                                           :stopwatchDateTime
+                                           :stopwatchDateTimeSplit])
+                             (clj->js)))
+    ;; Lap is derived based on whether split time is set, we don't need to keep it in state separately.
+    (set! (.-lap os) (boolean (:stopwatchDateTimeSplit new)))))
+    ; (js/console.log "state: " new)))
+
 (defn init-bip-mute-toggle [^js os]
   (let [soundOnOffBtn (.querySelector js/document "#SoundOnOff")
         muteBip (fn [mute]
@@ -120,6 +146,14 @@
     (.addEventListener soundOnOffBtn "click"
                        (fn [e] (muteBip (.contains (.. e -currentTarget -classList) "on"))))))
 
+(defn start [os service]
+  (init-bip-mute-toggle os)
+  (service/add-listener service :f91w
+                        (fn [_old new]
+                          (set-os-state! os new)))
+  (fsm/start service)
+  (bind-events service))
+
 (defn ^:export ^:dev/after-load reload []
   (js/location.reload))
 
@@ -135,40 +169,7 @@
                                              (j/lit {:actions {:playBip #(.playBip os)}}))
                                 #js {:devTools inspect?})
         service (->XStateService actor)]
-
-    (.subscribe actor (fn [snapshot]
-                        (let [context ^js (.-context snapshot)
-                              watch-value ^js (.-value.watch snapshot)
-                              light-value ^js (.-value.light snapshot)
-                              activeMenu (-> watch-value
-                                             (js/Object.keys)
-                                             (first))
-                              activeAction (gobj/get watch-value activeMenu)
-                              ;; The `holding` and `modified` states are part of the machine for accuracy of the model,
-                              ;; but such actions are not present in the original implementation,
-                              ;; so we render the `default` action insted of them.
-                              activeAction (if (#{"holding" "modified"} activeAction)
-                                             "default" activeAction)]
-                          (js/console.log "Value:" watch-value "Context:" context)
-                          (set! (.-activeMenu os) activeMenu)
-                          (set! (.-activeAction os) activeAction)
-                          (set! (.-light os) (= light-value "on"))
-                          (js/Object.assign os (j/select-keys context
-                                                              [:timeMode
-                                                               :alarmOnMark
-                                                               :timeSignalOnMark
-                                                               :dailyAlarmDateTime
-                                                               :dateTimeOffset
-                                                               :stopwatchDateTime
-                                                               :stopwatchDateTimeSplit]))
-                          ;; Lap is derived based on whether split time is set, we don't need to keep it in state separately.
-                          (set! (.-lap os) (boolean (.-stopwatchDateTimeSplit context))))))
-    (.start actor)
-    (init-bip-mute-toggle os)
-    (bind-events service)))
-
-    ; (.send actor #js {:type "c-down"})
-    ; (.send actor #js {:type "a-down"})
+    (start os service)))
 
 (defn transform-absolute-state-name [s]
   (->> (str/split (subs s 1) #"\.")
@@ -219,43 +220,8 @@
         machine (make-machine action-overrides)
         service (fsm/service (fsm/machine machine)
                              {:transition-opts {:ignore-unknown-event? true}})]
-
-    (service/add-listener service :f91w
-                          (fn [_old new]
-                            (let [{:keys [watch light]} (:_state new)
-                                  [active-menu active-action] watch]
-                              (set! (.-activeMenu os) (name active-menu))
-                              (set! (.-activeAction os) (name active-action))
-                              (set! (.-light os) (= light :on))
-                              (js/Object.assign os (-> (select-keys new
-                                                                    [:timeMode
-                                                                     :alarmOnMark
-                                                                     :timeSignalOnMark
-                                                                     :dailyAlarmDateTime
-                                                                     :dateTimeOffset
-                                                                     :stopwatchDateTime
-                                                                     :stopwatchDateTimeSplit])
-                                                       (clj->js)))
-                              ;; Lap is derived based on whether split time is set, we don't need to keep it in state separately.
-                              (set! (.-lap os) (boolean (:stopwatchDateTimeSplit new)))
-                              (js/console.log "state: " new))))
-
-    ;; start the service
-    (fsm/start service)
-    (bind-events service)
-    ;
-    (println (fsm/value service))
-
-    (js/console.log)
-    (js/console.log (js/Object.assign
-                     (fsm/assign (fn []))
-                     (xstate/assign (fn []))))))
-    ;
-    ; (fsm/send service :l-down)
-    ; (fsm/send service :l-up)
-    ; (fsm/send service :c-down)))
+    (start os service)))
 
 (defn ^:export main []
-  ; (statechart-main))
+  ; (statechart-main)
   (xstate-main))
-
