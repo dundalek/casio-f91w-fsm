@@ -1,10 +1,9 @@
-(ns casio.app-test
+(ns casio.machine-test
   (:require
-   [casio.app :refer [make-machine]]
-   [clojure.test :refer [async deftest is testing]]
-   [statecharts.core :as fsm]
+   [casio.statecharts-service :as statecharts-service :refer [state-value]]
    [casio.xstate-service :as xstate-service]
-   [casio.statecharts-service :refer [state-value]]))
+   [clojure.test :refer [async deftest is testing]]
+   [statecharts.core :as fsm]))
 
 (def ^:dynamic *bip-counter* nil)
 
@@ -20,19 +19,15 @@
   (assert (keyword? event))
   (fsm/send actor event))
 
-(defn make-clj-statecharts-watch-actor []
-  (let [action-overrides {:playBip play-bip-mocked}
-        machine (make-machine action-overrides)
-        service (fsm/service (fsm/machine machine)
-                             {:transition-opts {:ignore-unknown-event? true}})]
-    (fsm/start service)
-    service))
+(def test-actions
+  {:playBip play-bip-mocked})
 
 (defn test-machine [f]
   (testing "clj-statecharts implementation"
-    (f (make-clj-statecharts-watch-actor)))
+    (f (doto (statecharts-service/make-service {:actions test-actions})
+         (fsm/start))))
   (testing "xstate implementation"
-    (f (doto (xstate-service/make-service {:actions {:playBip play-bip-mocked}})
+    (f (doto (xstate-service/make-service {:actions test-actions})
          (fsm/start)))))
 
 (defn with-expected-bip [f]

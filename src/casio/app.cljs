@@ -1,12 +1,8 @@
 (ns casio.app
   (:require
-   ["/casio/machine" :as machine]
    ["@xstate/inspect" :refer [inspect]]
-   [casio.machine :refer [context-actions make-context]]
-   [casio.statecharts-service :refer [transform-state]]
+   [casio.statecharts-service :as statecharts-service]
    [casio.xstate-service :as xstate-service]
-   [clojure.string :as str]
-   [clojure.walk :as walk]
    [statecharts.core :as fsm]
    [statecharts.service :as service]))
 
@@ -23,7 +19,7 @@
 
 (defn set-os-state! [^js os new]
   (let [{:keys [watch light]} (:_state new)
-        watch-state (transform-state watch)
+        watch-state (statecharts-service/transform-state watch)
         active-menu (first (keys watch-state))
         active-action (get watch-state active-menu)
         ;; The `holding` and `modified` states are part of the machine for accuracy of the model,
@@ -34,7 +30,7 @@
                         "default" active-action)]
     (set! (.-activeMenu os) (name active-menu))
     (set! (.-activeAction os) active-action)
-    (set! (.-light os) (= (transform-state light) "on"))
+    (set! (.-light os) (= (statecharts-service/transform-state light) "on"))
     (js/Object.assign os (-> (select-keys new
                                           [:timeMode
                                            :alarmOnMark
@@ -48,7 +44,7 @@
     (set! (.-lap os) (boolean (:stopwatchDateTimeSplit new)))))
     ; (js/console.log "state: " new)))
 
-(defn init-bip-mute-toggle [^js os]
+(defn init-bip-mute-toggle! [^js os]
   (let [soundOnOffBtn (.querySelector js/document "#SoundOnOff")
         muteBip (fn [mute]
                   (.apply
@@ -67,73 +63,29 @@
     (.addEventListener soundOnOffBtn "click"
                        (fn [e] (muteBip (.contains (.. e -currentTarget -classList) "on"))))))
 
-(defn start [os service]
-  (init-bip-mute-toggle os)
-  (service/add-listener service :f91w
-                        (fn [_old new]
-                          (set-os-state! os new)))
-  (fsm/start service)
-  (bind-events service))
+(defn init-xstate-inspector! []
+  (let [iframe (js/document.createElement "iframe")]
+    (set! (.-style iframe) "flex-grow: 1; align-self: stretch;")
+    (.appendChild js/document.body iframe)
+    (inspect #js {:iframe iframe})))
 
 (defn ^:export ^:dev/after-load reload []
   (js/location.reload))
 
-(defn ^:export xstate-main []
-  (let [os (js/CasioF91WOperatingSystem.)
-        inspect? true
-        _ (when inspect?
-            (let [iframe (js/document.createElement "iframe")]
-              (set! (.-style iframe) "flex-grow: 1; align-self: stretch;")
-              (.appendChild js/document.body iframe)
-              (inspect #js {:iframe iframe})))
-        service (xstate-service/make-service {:actions {:playBip #(.playBip os)}
-                                              :options #js {:devTools inspect?}})]
-    (start os service)))
-
-(defn transform-absolute-state-name [s]
-  (->> (str/split (subs s 1) #"\.")
-       (drop 1)
-       (map keyword)
-       (into [:>])))
-
-(defn resolve-actions [registry actions]
-  (cond
-    (keyword? actions) (get registry actions actions)
-    (vector? actions) (mapv #(resolve-actions registry %) actions)
-    :else actions))
-
-(defn make-machine [action-overrides]
-  (let [action-registry (merge (update-vals context-actions fsm/assign)
-                               action-overrides)
-        actions->fns #(resolve-actions action-registry %)
-        machine (->> (js->clj (.-config machine/machine))
-                     (walk/postwalk (fn [x]
-                                      (cond
-                                        (string? x) (if (str/starts-with? x "#")
-                                                      (transform-absolute-state-name x)
-                                                      ;; parse numbers e.g. for :after transitions
-                                                      (if-some [number (parse-long x)]
-                                                        number
-                                                        (keyword x)))
-
-                                        (and (map? x) (:actions x)) (update x :actions actions->fns)
-
-                                        :else x))))
-        machine (-> machine
-                    (assoc :context (make-context))
-                    (dissoc :states)
-                    (assoc :regions (:states machine)))]
-    (js/console.log "machine" machine)
-    machine))
-
-(defn ^:export statechart-main []
-  (let [os (js/CasioF91WOperatingSystem.)
-        action-overrides {:playBip #(.playBip os)}
-        machine (make-machine action-overrides)
-        service (fsm/service (fsm/machine machine)
-                             {:transition-opts {:ignore-unknown-event? true}})]
-    (start os service)))
-
 (defn ^:export main []
-  ; (statechart-main))
-  (xstate-main))
+  (let [use-xstate? true
+        inspect? true
+        _ (when (and use-xstate? inspect?)
+            (init-xstate-inspector!))
+        os (js/CasioF91WOperatingSystem.)
+        actions {:playBip #(.playBip os)}
+        service (if use-xstate?
+                  (xstate-service/make-service {:actions actions
+                                                :options #js {:devTools inspect?}})
+                  (statecharts-service/make-service {:actions actions}))]
+    (init-bip-mute-toggle! os)
+    (service/add-listener service :f91w
+                          (fn [_old new]
+                            (set-os-state! os new)))
+    (fsm/start service)
+    (bind-events service)))
