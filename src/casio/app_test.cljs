@@ -4,7 +4,7 @@
    [casio.app :refer [watch-machine make-machine]]
    [clojure.test :refer [async deftest is testing]]
    [statecharts.core :as fsm]
-   [statecharts.service :as service]))
+   [casio.xstate :refer [->XStateService]]))
 
 (def ^:dynamic *bip-counter* nil)
 
@@ -19,25 +19,6 @@
                   xstate/interpret)]
     (.start actor)
     actor))
-
-(deftype XStateService [actor]
-  service/IService
-  (start [_this]
-    (.start actor))
-  (send [_this event]
-    (assert (keyword? event))
-    (.send actor #js {:type (name event)}))
-  (state [_this]
-    (let [context (js->clj (.-context (.getSnapshot actor))
-                           :keywordize-keys true)
-          value (js->clj (.-value (.getSnapshot actor))
-                         :keywordize-keys true)
-          ret (assoc context :_state value)]
-      ret))
-  (add-listener [_this _id _listener]
-    (throw (js/Error. "Not implemented")))
-  (reload [_this _fsm]
-    (throw (js/Error. "Not implemented"))))
 
 (defn transform-state [state]
   (cond (keyword? state) (name state)
@@ -65,8 +46,10 @@
     service))
 
 (defn test-machine [f]
-  (f (make-clj-statecharts-watch-actor))
-  (f (->XStateService (make-xstate-watch-actor))))
+  (testing "clj-statecharts implementation"
+    (f (make-clj-statecharts-watch-actor)))
+  (testing "xstate implementation"
+    (f (->XStateService (make-xstate-watch-actor)))))
 
 (defn with-expected-bip [f]
   (let [!counter (atom 0)]

@@ -8,7 +8,8 @@
    [clojure.walk :as walk]
    [goog.object :as gobj]
    [statecharts.core :as fsm]
-   [statecharts.service :as service]))
+   [statecharts.service :as service]
+   [casio.xstate :refer [->XStateService]]))
 
 (defn make-time [hours minutes seconds]
   (doto (js/Date.)
@@ -17,85 +18,69 @@
     (.setSeconds seconds)
     (.setMilliseconds 0)))
 
-(defn assign-context [f]
+(defn update-datetime-handler-fsm [f]
+  (fn [context]
+    (update context :dateTimeOffset
+            (fn [dateTimeOffset]
+              (let [now (js/Date.now)
+                    current (js/Date. (+ now dateTimeOffset))]
+                (f current)
+                (- (.getTime current) now))))))
+
+(def clj-actions
+  {:toggleTimeMode (fn [context]
+                     (update context :timeMode #(if (= % "24") "12" "24")))
+   :toggleAlarmMode (fn [{:keys [alarmOnMark timeSignalOnMark] :as context}]
+                      (merge context (cond
+                                       (and alarmOnMark timeSignalOnMark) {:alarmOnMark false :timeSignalOnMark false}
+                                       alarmOnMark {:alarmOnMark false :timeSignalOnMark true}
+                                       timeSignalOnMark {:alarmOnMark true :timeSignalOnMark true}
+                                       :else {:alarmOnMark true :timeSignalOnMark false})))
+   :enableAlarmOnMark #(assoc % :alarmOnMark true)
+   :incrementAlarmHours (fn [context]
+                          (update context :dailyAlarmDateTime #(doto (js/Date. %)
+                                                                 (.setHours (inc (.getHours %))))))
+   :incrementAlarmMinutes (fn [context]
+                            (update context :dailyAlarmDateTime #(doto (js/Date. %)
+                                                                   (.setMinutes (inc (.getMinutes %))))))
+   :resetTimeSeconds (update-datetime-handler-fsm #(.setSeconds % 0))
+   :incrementTimeMinutes (update-datetime-handler-fsm #(.setMinutes % (inc (.getMinutes %))))
+   :incrementTimeHours (update-datetime-handler-fsm #(.setHours % (inc (.getHours %))))
+   :incrementDateMonth (update-datetime-handler-fsm #(.setMonth % (inc (.getMonth %))))
+   :incrementDateDay (update-datetime-handler-fsm #(.setDate % (inc (.getDate %))))
+   :toggleStopwatch (fn [{:keys [stopwatchInterval stopwatchDateTime] :as context}]
+                      (assoc context :stopwatchInterval
+                             (if stopwatchInterval
+                               (do
+                                 (js/clearInterval stopwatchInterval)
+                                 nil)
+                               (js/setInterval
+                                (fn []
+                                  ;; hack: mutating the stopwatchDateTime
+                                  ;; note: mimicking the original implementation, setInterval can accumulate inaccuracies
+                                  (.setMilliseconds stopwatchDateTime
+                                                    (+ (.getMilliseconds stopwatchDateTime) 10)))
+                                10))))
+   :toggleSplitOrClearStopwatch (fn [{:keys [stopwatchInterval stopwatchDateTime stopwatchDateTimeSplit] :as context}]
+                                  (cond
+                                    ;; Reset if there is a saved split time.
+                                    stopwatchDateTimeSplit (assoc context :stopwatchDateTimeSplit nil)
+                                    ;; If the stopwatch is running then save a split time.
+                                    stopwatchInterval (assoc context :stopwatchDateTimeSplit (js/Date. stopwatchDateTime))
+                                    ;; Otherwise clear stopwatch date time.
+                                    :else (assoc context :stopwatchDateTime (make-time 0 0 0))))})
+
+(defn xstate-assign-context [f]
   (xstate/assign
    (fn [^js params]
      ;; for xstate v4
-     (f params)
+     (clj->js (f (js->clj params :keywordize-keys true)))
      ;; for v5
      #_(f (.-context params)))))
 
-(defn update-datetime-handler [f]
-  (assign-context
-   (fn [^js context]
-     (let [now (js/Date.now)
-           current (js/Date. (+ now (.-dateTimeOffset context)))
-           _ (f current)
-           dateTimeOffset (- (.getTime current) now)]
-       #js {:dateTimeOffset dateTimeOffset}))))
-
-(def actions
-  (j/lit {:toggleTimeMode (assign-context
-                           (fn [^js context]
-                             (let [mode (if (= (.-timeMode context) "24")
-                                          "12" "24")]
-                               #js {:timeMode mode})))
-          :toggleAlarmMode (assign-context
-                            (fn [^js context]
-                              (let [alarmOnMark (.-alarmOnMark context)
-                                    timeSignalOnMark (.-timeSignalOnMark context)]
-                                (cond
-                                  (and alarmOnMark timeSignalOnMark) #js {:alarmOnMark false :timeSignalOnMark false}
-                                  alarmOnMark #js {:alarmOnMark false :timeSignalOnMark true}
-                                  timeSignalOnMark #js {:alarmOnMark true :timeSignalOnMark true}
-                                  :else #js {:alarmOnMark true :timeSignalOnMark false}))))
-          :enableAlarmOnMark (assign-context (constantly #js {:alarmOnMark true}))
-          :incrementAlarmHours (assign-context
-                                (fn [^js context]
-                                  #js {:dailyAlarmDateTime (doto (js/Date. (.-dailyAlarmDateTime context))
-                                                             (.setHours (inc (.getHours (.-dailyAlarmDateTime context)))))}))
-          :incrementAlarmMinutes (assign-context
-                                  (fn [^js context]
-                                    #js {:dailyAlarmDateTime (doto (js/Date. (.-dailyAlarmDateTime context))
-                                                               (.setMinutes (inc (.getMinutes (.-dailyAlarmDateTime context)))))}))
-          :resetTimeSeconds (update-datetime-handler #(.setSeconds % 0))
-          :incrementTimeMinutes (update-datetime-handler #(.setMinutes % (inc (.getMinutes %))))
-          :incrementTimeHours (update-datetime-handler #(.setHours % (inc (.getHours %))))
-          :incrementDateMonth (update-datetime-handler #(.setMonth % (inc (.getMonth %))))
-          :incrementDateDay (update-datetime-handler #(.setDate % (inc (.getDate %))))
-          :toggleStopwatch (assign-context
-                            (fn [^js context]
-                              (let [stopwatchInterval (.-stopwatchInterval context)
-                                    stopwatchDateTime (.-stopwatchDateTime context)]
-                                (if stopwatchInterval
-                                  (do
-                                    (js/clearInterval stopwatchInterval)
-                                    #js {:stopwatchInterval nil})
-                                  (let [interval (js/setInterval
-                                                  (fn []
-                                                    ;; hack: mutating the stopwatchDateTime
-                                                    ;; note: mimicking the original implementation, setInterval can accumulate inaccuracies
-                                                    (.setMilliseconds stopwatchDateTime
-                                                                      (+ (.getMilliseconds stopwatchDateTime) 10)))
-                                                  10)]
-                                    #js {:stopwatchInterval interval})))))
-          :toggleSplitOrClearStopwatch (assign-context
-                                        (fn [^js context]
-                                          (let [stopwatchInterval (.-stopwatchInterval context)
-                                                stopwatchDateTime (.-stopwatchDateTime context)
-                                                stopwatchDateTimeSplit (.-stopwatchDateTimeSplit context)]
-                                            (cond
-                                              ;; Reset if there is a saved split time.
-                                              stopwatchDateTimeSplit #js {:stopwatchDateTimeSplit nil}
-                                              ;; If the stopwatch is running then save a split time.
-                                              stopwatchInterval #js {:stopwatchDateTimeSplit (js/Date. stopwatchDateTime)}
-                                              ;; Otherwise clear stopwatch date time.
-                                              :else #js {:stopwatchDateTime (make-time 0 0 0)}))))
-          :playBip #(js/console.log "Playing bip")}))
-
 (def watch-machine
   (-> machine/machine
-      (.withConfig #js {:actions actions})
+      (.withConfig #js {:actions (clj->js (update-vals clj-actions xstate-assign-context))})
       (.withContext (j/lit {:timeMode "24"
                             :alarmOnMark false
                             :timeSignalOnMark false
@@ -109,12 +94,12 @@
   (let [button-l (js/document.querySelector "#buttonL")
         button-c (js/document.querySelector "#buttonC")
         button-a (js/document.querySelector "#buttonA")]
-    (.addEventListener button-l "mousedown" #(.send actor #js {:type "l-down"}))
-    (.addEventListener button-l "mouseup" #(.send actor #js {:type "l-up"}))
-    (.addEventListener button-c "mousedown" #(.send actor #js {:type "c-down"}))
-    (.addEventListener button-c "mouseup" #(.send actor #js {:type "c-up"}))
-    (.addEventListener button-a "mousedown" #(.send actor #js {:type "a-down"}))
-    (.addEventListener button-a "mouseup" #(.send actor #js {:type "a-up"}))))
+    (.addEventListener button-l "mousedown" #(fsm/send actor :l-down))
+    (.addEventListener button-l "mouseup" #(fsm/send actor :l-up))
+    (.addEventListener button-c "mousedown" #(fsm/send actor :c-down))
+    (.addEventListener button-c "mouseup" #(fsm/send actor :c-up))
+    (.addEventListener button-a "mousedown" #(fsm/send actor :a-down))
+    (.addEventListener button-a "mouseup" #(fsm/send actor :a-up))))
 
 (defn init-bip-mute-toggle [^js os]
   (let [soundOnOffBtn (.querySelector js/document "#SoundOnOff")
@@ -138,7 +123,7 @@
 (defn ^:export ^:dev/after-load reload []
   (js/location.reload))
 
-(defn ^:export xstate_main []
+(defn ^:export xstate-main []
   (let [os (js/CasioF91WOperatingSystem.)
         inspect? true
         _ (when inspect?
@@ -148,7 +133,8 @@
               (inspect #js {:iframe iframe})))
         actor (xstate/interpret (.withConfig watch-machine
                                              (j/lit {:actions {:playBip #(.playBip os)}}))
-                                #js {:devTools inspect?})]
+                                #js {:devTools inspect?})
+        service (->XStateService actor)]
 
     (.subscribe actor (fn [snapshot]
                         (let [context ^js (.-context snapshot)
@@ -179,7 +165,7 @@
                           (set! (.-lap os) (boolean (.-stopwatchDateTimeSplit context))))))
     (.start actor)
     (init-bip-mute-toggle os)
-    (bind-events actor)))
+    (bind-events service)))
 
     ; (.send actor #js {:type "c-down"})
     ; (.send actor #js {:type "a-down"})
@@ -190,65 +176,6 @@
        (map keyword)
        (into [:>])))
 
-(defn update-datetime-handler-fsm [f]
-  (fsm/assign
-   (fn [context]
-     (update context :dateTimeOffset
-             (fn [dateTimeOffset]
-               (let [now (js/Date.now)
-                     current (js/Date. (+ now dateTimeOffset))]
-                 (f current)
-                 (- (.getTime current) now)))))))
-
-(def clj-actions
-  {:toggleTimeMode  (fsm/assign
-                     (fn [context]
-                       (update context :timeMode #(if (= % "24") "12" "24"))))
-   :toggleAlarmMode (fsm/assign
-                     (fn [{:keys [alarmOnMark timeSignalOnMark] :as context}]
-                       (merge context (cond
-                                        (and alarmOnMark timeSignalOnMark) {:alarmOnMark false :timeSignalOnMark false}
-                                        alarmOnMark {:alarmOnMark false :timeSignalOnMark true}
-                                        timeSignalOnMark {:alarmOnMark true :timeSignalOnMark true}
-                                        :else {:alarmOnMark true :timeSignalOnMark false}))))
-   :enableAlarmOnMark (fsm/assign #(assoc % :alarmOnMark true))
-   :incrementAlarmHours (fsm/assign
-                         (fn [context]
-                           (update context :dailyAlarmDateTime #(doto (js/Date. %)
-                                                                  (.setHours (inc (.getHours %)))))))
-   :incrementAlarmMinutes (fsm/assign
-                           (fn [context]
-                             (update context :dailyAlarmDateTime #(doto (js/Date. %)
-                                                                    (.setMinutes (inc (.getMinutes %)))))))
-   :resetTimeSeconds (update-datetime-handler-fsm #(.setSeconds % 0))
-   :incrementTimeMinutes (update-datetime-handler-fsm #(.setMinutes % (inc (.getMinutes %))))
-   :incrementTimeHours (update-datetime-handler-fsm #(.setHours % (inc (.getHours %))))
-   :incrementDateMonth (update-datetime-handler-fsm #(.setMonth % (inc (.getMonth %))))
-   :incrementDateDay (update-datetime-handler-fsm #(.setDate % (inc (.getDate %))))
-   :toggleStopwatch (fsm/assign
-                     (fn [{:keys [stopwatchInterval stopwatchDateTime] :as context}]
-                       (assoc context :stopwatchInterval
-                              (if stopwatchInterval
-                                (do
-                                  (js/clearInterval stopwatchInterval)
-                                  nil)
-                                (js/setInterval
-                                 (fn []
-                                   ;; hack: mutating the stopwatchDateTime
-                                   ;; note: mimicking the original implementation, setInterval can accumulate inaccuracies
-                                   (.setMilliseconds stopwatchDateTime
-                                                     (+ (.getMilliseconds stopwatchDateTime) 10)))
-                                 10)))))
-   :toggleSplitOrClearStopwatch (fsm/assign
-                                 (fn [{:keys [stopwatchInterval stopwatchDateTime stopwatchDateTimeSplit] :as context}]
-                                   (cond
-                                     ;; Reset if there is a saved split time.
-                                     stopwatchDateTimeSplit (assoc context :stopwatchDateTimeSplit nil)
-                                     ;; If the stopwatch is running then save a split time.
-                                     stopwatchInterval (assoc context :stopwatchDateTimeSplit (js/Date. stopwatchDateTime))
-                                     ;; Otherwise clear stopwatch date time.
-                                     :else (assoc context :stopwatchDateTime (make-time 0 0 0)))))})
-
 (defn resolve-actions [registry actions]
   (cond
     (keyword? actions) (get registry actions actions)
@@ -256,7 +183,8 @@
     :else actions))
 
 (defn make-machine [action-overrides]
-  (let [action-registry (merge clj-actions action-overrides)
+  (let [action-registry (merge (update-vals clj-actions fsm/assign)
+                               action-overrides)
         actions->fns #(resolve-actions action-registry %)
         machine (->> (js->clj (.-config machine/machine))
                      (walk/postwalk (fn [x]
@@ -285,18 +213,7 @@
     (js/console.log "machine" machine)
     machine))
 
-(defn xbind-events [actor]
-  (let [button-l (js/document.querySelector "#buttonL")
-        button-c (js/document.querySelector "#buttonC")
-        button-a (js/document.querySelector "#buttonA")]
-    (.addEventListener button-l "mousedown" #(fsm/send actor {:type :l-down}))
-    (.addEventListener button-l "mouseup" #(fsm/send actor {:type :l-up}))
-    (.addEventListener button-c "mousedown" #(fsm/send actor {:type :c-down}))
-    (.addEventListener button-c "mouseup" #(fsm/send actor {:type :c-up}))
-    (.addEventListener button-a "mousedown" #(fsm/send actor {:type :a-down}))
-    (.addEventListener button-a "mouseup" #(fsm/send actor {:type :a-up}))))
-
-(defn ^:export main []
+(defn ^:export statechart-main []
   (let [os (js/CasioF91WOperatingSystem.)
         action-overrides {:playBip #(.playBip os)}
         machine (make-machine action-overrides)
@@ -325,10 +242,20 @@
 
     ;; start the service
     (fsm/start service)
-    (xbind-events service)
+    (bind-events service)
     ;
-    (println (fsm/value service))))
+    (println (fsm/value service))
+
+    (js/console.log)
+    (js/console.log (js/Object.assign
+                     (fsm/assign (fn []))
+                     (xstate/assign (fn []))))))
     ;
     ; (fsm/send service :l-down)
     ; (fsm/send service :l-up)
     ; (fsm/send service :c-down)))
+
+(defn ^:export main []
+  ; (statechart-main))
+  (xstate-main))
+
