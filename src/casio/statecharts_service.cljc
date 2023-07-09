@@ -1,4 +1,4 @@
-(ns casio.statecharts
+(ns casio.statecharts-service
   (:require
    [statecharts.core :as fsm]))
 

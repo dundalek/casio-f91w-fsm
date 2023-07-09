@@ -1,11 +1,10 @@
 (ns casio.app-test
   (:require
-   ["xstate" :as xstate]
-   [casio.app :refer [watch-machine make-machine]]
+   [casio.app :refer [make-machine]]
    [clojure.test :refer [async deftest is testing]]
    [statecharts.core :as fsm]
-   [casio.xstate :refer [->XStateService]]
-   [casio.statecharts :refer [state-value]]))
+   [casio.xstate-service :as xstate-service]
+   [casio.statecharts-service :refer [state-value]]))
 
 (def ^:dynamic *bip-counter* nil)
 
@@ -13,13 +12,6 @@
   (is (some? *bip-counter*)
       "Unexpected playBip action. Wrap in `with-expected-bip` in case it is expected.")
   (swap! *bip-counter* inc))
-
-(defn make-xstate-watch-actor []
-  (let [actor (-> watch-machine
-                  (.withConfig #js {:actions #js {:playBip play-bip-mocked}})
-                  xstate/interpret)]
-    (.start actor)
-    actor))
 
 (defn get-context [actor]
   (fsm/state actor))
@@ -40,7 +32,8 @@
   (testing "clj-statecharts implementation"
     (f (make-clj-statecharts-watch-actor)))
   (testing "xstate implementation"
-    (f (->XStateService (make-xstate-watch-actor)))))
+    (f (doto (xstate-service/make-service {:actions {:playBip play-bip-mocked}})
+         (fsm/start)))))
 
 (defn with-expected-bip [f]
   (let [!counter (atom 0)]

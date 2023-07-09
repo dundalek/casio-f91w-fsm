@@ -2,92 +2,13 @@
   (:require
    ["/casio/machine" :as machine]
    ["@xstate/inspect" :refer [inspect]]
-   ["xstate" :as xstate]
-   [applied-science.js-interop :as j]
-   [casio.statecharts :refer [transform-state]]
-   [casio.xstate :refer [->XStateService]]
+   [casio.machine :refer [context-actions make-context]]
+   [casio.statecharts-service :refer [transform-state]]
+   [casio.xstate-service :as xstate-service]
    [clojure.string :as str]
    [clojure.walk :as walk]
    [statecharts.core :as fsm]
    [statecharts.service :as service]))
-
-(defn make-time [hours minutes seconds]
-  (doto (js/Date.)
-    (.setHours hours)
-    (.setMinutes minutes)
-    (.setSeconds seconds)
-    (.setMilliseconds 0)))
-
-(defn update-datetime-handler-fsm [f]
-  (fn [context]
-    (update context :dateTimeOffset
-            (fn [dateTimeOffset]
-              (let [now (js/Date.now)
-                    current (js/Date. (+ now dateTimeOffset))]
-                (f current)
-                (- (.getTime current) now))))))
-
-(def clj-actions
-  {:toggleTimeMode (fn [context]
-                     (update context :timeMode #(if (= % "24") "12" "24")))
-   :toggleAlarmMode (fn [{:keys [alarmOnMark timeSignalOnMark] :as context}]
-                      (merge context (cond
-                                       (and alarmOnMark timeSignalOnMark) {:alarmOnMark false :timeSignalOnMark false}
-                                       alarmOnMark {:alarmOnMark false :timeSignalOnMark true}
-                                       timeSignalOnMark {:alarmOnMark true :timeSignalOnMark true}
-                                       :else {:alarmOnMark true :timeSignalOnMark false})))
-   :enableAlarmOnMark #(assoc % :alarmOnMark true)
-   :incrementAlarmHours (fn [context]
-                          (update context :dailyAlarmDateTime #(doto (js/Date. %)
-                                                                 (.setHours (inc (.getHours %))))))
-   :incrementAlarmMinutes (fn [context]
-                            (update context :dailyAlarmDateTime #(doto (js/Date. %)
-                                                                   (.setMinutes (inc (.getMinutes %))))))
-   :resetTimeSeconds (update-datetime-handler-fsm #(.setSeconds % 0))
-   :incrementTimeMinutes (update-datetime-handler-fsm #(.setMinutes % (inc (.getMinutes %))))
-   :incrementTimeHours (update-datetime-handler-fsm #(.setHours % (inc (.getHours %))))
-   :incrementDateMonth (update-datetime-handler-fsm #(.setMonth % (inc (.getMonth %))))
-   :incrementDateDay (update-datetime-handler-fsm #(.setDate % (inc (.getDate %))))
-   :toggleStopwatch (fn [{:keys [stopwatchInterval stopwatchDateTime] :as context}]
-                      (assoc context :stopwatchInterval
-                             (if stopwatchInterval
-                               (do
-                                 (js/clearInterval stopwatchInterval)
-                                 nil)
-                               (js/setInterval
-                                (fn []
-                                  ;; hack: mutating the stopwatchDateTime
-                                  ;; note: mimicking the original implementation, setInterval can accumulate inaccuracies
-                                  (.setMilliseconds stopwatchDateTime
-                                                    (+ (.getMilliseconds stopwatchDateTime) 10)))
-                                10))))
-   :toggleSplitOrClearStopwatch (fn [{:keys [stopwatchInterval stopwatchDateTime stopwatchDateTimeSplit] :as context}]
-                                  (cond
-                                    ;; Reset if there is a saved split time.
-                                    stopwatchDateTimeSplit (assoc context :stopwatchDateTimeSplit nil)
-                                    ;; If the stopwatch is running then save a split time.
-                                    stopwatchInterval (assoc context :stopwatchDateTimeSplit (js/Date. stopwatchDateTime))
-                                    ;; Otherwise clear stopwatch date time.
-                                    :else (assoc context :stopwatchDateTime (make-time 0 0 0))))})
-
-(defn xstate-assign-context [f]
-  (xstate/assign
-   (fn [^js params]
-     (let [context params] ; for xstate v4
-           ;context (.-context params) ; for v5
-       (clj->js (f (js->clj context :keywordize-keys true)))))))
-
-(def watch-machine
-  (-> machine/machine
-      (.withConfig #js {:actions (clj->js (update-vals clj-actions xstate-assign-context))})
-      (.withContext (j/lit {:timeMode "24"
-                            :alarmOnMark false
-                            :timeSignalOnMark false
-                            :dailyAlarmDateTime (make-time 7 0 0)
-                            :dateTimeOffset 0
-                            :stopwatchInterval nil
-                            :stopwatchDateTime (make-time 0 0 0)
-                            :stopwatchDateTimeSplit nil}))))
 
 (defn bind-events [actor]
   (let [button-l (js/document.querySelector "#buttonL")
@@ -165,10 +86,8 @@
               (set! (.-style iframe) "flex-grow: 1; align-self: stretch;")
               (.appendChild js/document.body iframe)
               (inspect #js {:iframe iframe})))
-        actor (xstate/interpret (.withConfig watch-machine
-                                             (j/lit {:actions {:playBip #(.playBip os)}}))
-                                #js {:devTools inspect?})
-        service (->XStateService actor)]
+        service (xstate-service/make-service {:actions {:playBip #(.playBip os)}
+                                              :options #js {:devTools inspect?}})]
     (start os service)))
 
 (defn transform-absolute-state-name [s]
@@ -184,7 +103,7 @@
     :else actions))
 
 (defn make-machine [action-overrides]
-  (let [action-registry (merge (update-vals clj-actions fsm/assign)
+  (let [action-registry (merge (update-vals context-actions fsm/assign)
                                action-overrides)
         actions->fns #(resolve-actions action-registry %)
         machine (->> (js->clj (.-config machine/machine))
@@ -201,14 +120,7 @@
 
                                         :else x))))
         machine (-> machine
-                    (assoc :context {:timeMode "24"
-                                     :alarmOnMark false
-                                     :timeSignalOnMark false
-                                     :dailyAlarmDateTime (make-time 7 0 0)
-                                     :dateTimeOffset 0
-                                     :stopwatchInterval nil
-                                     :stopwatchDateTime (make-time 0 0 0)
-                                     :stopwatchDateTimeSplit nil})
+                    (assoc :context (make-context))
                     (dissoc :states)
                     (assoc :regions (:states machine)))]
     (js/console.log "machine" machine)
@@ -223,5 +135,5 @@
     (start os service)))
 
 (defn ^:export main []
-  ; (statechart-main)
+  ; (statechart-main))
   (xstate-main))
