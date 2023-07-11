@@ -73,15 +73,15 @@
   (js/location.reload))
 
 (defn ^:export main []
-  (let [use-xstate? true
-        inspect? true
-        _ (when (and use-xstate? inspect?)
+  (let [use-xstate? true ; false to use clj-statecharts implementation
+        show-inspector? true
+        _ (when (and use-xstate? show-inspector?)
             (init-xstate-inspector!))
         os (js/CasioF91WOperatingSystem.)
         actions {:playBip #(.playBip os)}
         service (if use-xstate?
                   (xstate-service/make-service {:actions actions
-                                                :options #js {:devTools inspect?}})
+                                                :options #js {:devTools show-inspector?}})
                   (statecharts-service/make-service {:actions actions}))]
     (init-bip-mute-toggle! os)
     (service/add-listener service :f91w
