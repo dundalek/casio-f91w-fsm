@@ -7,7 +7,7 @@ Interactive model of the Casio F-91W watch using statecharts.
 ## Intro
 
 [Statecharts](https://statecharts.dev) are an extension of state machines, introduced by David Harel in 1987.
-In the [paper](https://www.wisdom.weizmann.ac.il/~harel/papers/Statecharts.pdf), Harel used a digital wristwatch as an example model.
+In the [paper](https://web.archive.org/web/20140828085002/http://www.wisdom.weizmann.ac.il/~harel/papers/Statecharts.pdf), Harel used a digital wristwatch as an example model.
 
 I always thought it would be great to have an interactive demo that allows to see statecharts in action.
 Unfortunately, that particular wristwatch (Citizen Quartz Multi-Alarm III) is now a rarity.
@@ -15,7 +15,7 @@ Unfortunately, that particular wristwatch (Citizen Quartz Multi-Alarm III) is no
 However, there is the iconic [Casio F-91W](https://en.wikipedia.org/wiki/Casio_F-91W), which despite being introduced only two years after the paper was published, remains widely popular and is still manufactured and sold today.
 Alexis Philip created an [online version](https://github.com/alexisphilip/Casio-F-91W) digitizing the graphical elements.
 
-This [demo](https://casio-f91w.pages.dev) builds on Alexis' work, demonstrates using statecharts by replacing the logic using the [XState](https://xstate.js.org/) library, and uses the Stately visualizer to show states and transitions side by side for educational purposes. You can also check out the [official manual](https://support.casio.com/storage/en/manual/pdf/EN/009/qw593.pdf) for the watch.
+This [demo](https://casio-f91w.pages.dev) builds on Alexis' work, demonstrates using statecharts by replacing the logic using the [XState](https://xstate.js.org/) library, and uses the Stately visualizer to show states and transitions side by side for educational purposes. You can also check out the [official manual](https://web.archive.org/web/20240310073811/https://support.casio.com/storage/en/manual/pdf/EN/009/qw593.pdf) for the watch.
 
 [![Casio F-91W Statecharts Demo](images/statecharts-demo.png)](https://casio-f91w.pages.dev)
 
@@ -28,8 +28,8 @@ This [demo](https://casio-f91w.pages.dev) builds on Alexis' work, demonstrates u
 ## Resources
 
 - [Citizen watch statechart](https://github.com/andyjakubowski/statechart-watch) - similar statechart implementation of the original Citizen watch
-- [Statecharts paper](https://www.wisdom.weizmann.ac.il/~harel/papers/Statecharts.pdf) - original 1987 paper by David Harel
-- [Casio F-91W manual](https://support.casio.com/storage/en/manual/pdf/EN/009/qw593.pdf) - official manual for the watch
+- [Statecharts paper](https://web.archive.org/web/20140828085002/http://www.wisdom.weizmann.ac.il/~harel/papers/Statecharts.pdf) - original 1987 paper by David Harel
+- [Casio F-91W manual](https://web.archive.org/web/20240310073811/https://support.casio.com/storage/en/manual/pdf/EN/009/qw593.pdf) - official manual for the watch
 
 ## Implementation
 
